@@ -10,6 +10,7 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
+    provider: ^6.1.1
     remit:
         git:
             url: https://github.com/zyrouge/dart_remit.git
@@ -20,7 +21,7 @@ dev_dependencies:
             url: https://github.com/zyrouge/dart_zlint.git
 
 flutter:
-    uses-material-design: true
+    uses-material-design: false
 
     # assets:
     #   - images/a_dot_burr.jpeg
