@@ -1,1 +1,7 @@
 [[keys]]
+name = "Send"
+description = "Send"
+
+[[keys]]
+name = "Receive"
+description = "Receive"

@@ -12,6 +12,7 @@ enum RuiThemeMode { light, dark }
 @freezed
 class RuiSettingsData with _$RuiSettingsData {
   const factory RuiSettingsData({
+    final String? locale,
     @Default(RuiThemeMode.dark) final RuiThemeMode themeMode,
   }) = _RuiSettingsData;
 

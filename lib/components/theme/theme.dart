@@ -23,7 +23,7 @@ class RuiTheme extends InheritedWidget {
 
   static RuiTheme of(final BuildContext context) {
     final RuiTheme? result = maybeOf(context);
-    assert(result != null, 'No FrogColor found in context');
+    assert(result != null, 'No RuiTheme found in context');
     return result!;
   }
 }

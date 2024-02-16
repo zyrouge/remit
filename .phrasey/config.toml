@@ -1,16 +1,16 @@
-[input]:
+[input]
 files = ["../i18n/**.toml"]
-format = toml
+format = "toml"
 fallback = ["../i18n/en.toml"]
 
-[schema]:
-file = "./schema.json"
-format = toml
+[schema]
+file = "./schema.toml"
+format = "toml"
 
-[output]:
-dir = "../dist-i18n"
-format = json
-stringFormat = format-string
+[output]
+dir = "../assets/i18n"
+format = "json"
+stringFormat = "format-string"
 
 [hooks]
-files = []
+files = ["./hooks/dart-sync.js"]

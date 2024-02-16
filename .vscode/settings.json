@@ -1,10 +1,14 @@
 {
     "editor.formatOnSave": true,
+    "dart.doNotFormat": ["lib/services/translations/*_part.dart"],
     "[dart]": {
         "editor.defaultFormatter": "Dart-Code.dart-code"
     },
     "[toml]": {
         "editor.defaultFormatter": "tamasfe.even-better-toml"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[json]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"

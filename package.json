@@ -3,11 +3,18 @@
     "private": true,
     "version": "0.0.0",
     "description": "",
-    "scripts": {},
+    "scripts": {
+        "build:i18n": "phrasey build -p ./.phrasey/config.toml -f toml",
+        "build:gen": "dart run build_runner build",
+        "dev": "npm run build:i18n && npm run build:gen && flutter run"
+    },
     "repository": "https://github.com/zyrouge/remit.git",
     "author": "Zyrouge",
     "license": "GPL-3.0",
-    "dependencies": {
+    "devDependencies": {
+        "@zyrouge/phrasey-json": "^1.0.3",
+        "@zyrouge/phrasey-locales": "^1.1.9",
+        "@zyrouge/phrasey-toml": "^1.0.3",
         "phrasey": "^2.0.26"
     }
 }

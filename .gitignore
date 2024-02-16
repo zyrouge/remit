@@ -29,3 +29,5 @@ app.*.map.json
 *.freezed.dart
 *.g.dart
 node_modules
+lib/services/translations/*_part.dart
+assets/i18n

@@ -15,6 +15,8 @@ class RuiColorScheme {
     required this.onSurface,
     required this.surfaceVariant,
     required this.onSurfaceVariant,
+    required this.disabled,
+    required this.onDisabled,
   });
 
   final Color primary;
@@ -29,6 +31,8 @@ class RuiColorScheme {
   final Color onSurface;
   final Color surfaceVariant;
   final Color onSurfaceVariant;
+  final Color disabled;
+  final Color onDisabled;
 
   static const RuiColorScheme light = RuiColorScheme(
     primary: RuiColors.blue500,
@@ -43,6 +47,8 @@ class RuiColorScheme {
     onSurface: RuiColors.black,
     surfaceVariant: RuiColors.light300,
     onSurfaceVariant: RuiColors.black,
+    disabled: RuiColors.light400,
+    onDisabled: RuiColors.light600,
   );
 
   static const RuiColorScheme dark = RuiColorScheme(
@@ -58,5 +64,7 @@ class RuiColorScheme {
     onSurface: RuiColors.white,
     surfaceVariant: RuiColors.dark600,
     onSurfaceVariant: RuiColors.white,
+    disabled: RuiColors.dark500,
+    onDisabled: RuiColors.dark300,
   );
 }

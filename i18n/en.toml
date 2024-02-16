@@ -1,1 +1,5 @@
 locale = "en"
+
+[keys]
+Send = "Send"
+Receive = "Receive"
