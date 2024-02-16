@@ -30,10 +30,7 @@ class _RuiSplashState extends State<RuiSplash> {
     });
   }
 
-  @override
-  Widget build(final BuildContext context) {
-    if (!ready) {
-      return Directionality(
+  Widget buildSplash(final BuildContext context) => Directionality(
         textDirection: TextDirection.ltr,
         child: ColoredBox(
           color: RuiColors.dark900,
@@ -53,6 +50,11 @@ class _RuiSplashState extends State<RuiSplash> {
           ),
         ),
       );
+
+  @override
+  Widget build(final BuildContext context) {
+    if (!ready) {
+      return buildSplash(context);
     }
     return const RuiApp();
   }
@@ -68,8 +70,7 @@ class _RuiSplashLoadingIndicator extends StatefulWidget {
 
 class __RuiSplashLoadingIndicatorState
     extends State<_RuiSplashLoadingIndicator> {
-  int highlight = 0;
-  int count = 5;
+  bool highlight = false;
   Timer? timer;
 
   @override
@@ -78,7 +79,7 @@ class __RuiSplashLoadingIndicatorState
     Timer.periodic(const Duration(milliseconds: 500), (final _) {
       if (!mounted) return;
       setState(() {
-        highlight = (highlight + 1) % count;
+        highlight = !highlight;
       });
     });
   }
@@ -90,22 +91,13 @@ class __RuiSplashLoadingIndicatorState
     timer = null;
   }
 
-  Widget buildSquare(final int target) => SizedBox(
-        height: 2,
-        width: 10,
-        child: ColoredBox(
-          color: highlight == target ? RuiColors.blue500 : RuiColors.dark800,
-        ),
-      );
-
   @override
-  Widget build(final BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          for (int i = 0; i < count; i++) ...<Widget>[
-            buildSquare(i),
-            if (i != count - 1) const SizedBox(width: 2),
-          ],
-        ],
+  Widget build(final BuildContext context) => Container(
+        width: 5,
+        height: 5,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: highlight ? RuiColors.blue500 : RuiColors.dark800,
+        ),
       );
 }

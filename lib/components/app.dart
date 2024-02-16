@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import '../pages/home.dart';
 import '../services/settings/settings.dart';
 import 'theme/color_scheme.dart';
 import 'theme/text_theme.dart';
@@ -38,27 +39,12 @@ class _RuiAppState extends State<RuiApp> {
   @override
   Widget build(final BuildContext context) => RuiTheme(
         data: theme,
-        child: WidgetsApp(
-          textStyle: theme.textTheme.body,
-          color: theme.colorScheme.background,
-          home: Provider<RuiSettingsData>.value(
-            value: settings,
-            child: Container(
-              child: Text('hi'),
-            ),
-          ),
-          onGenerateRoute: (final _) {},
-          onUnknownRoute: (final _) {},
-          pageRouteBuilder:
-              <T>(final RouteSettings settings, final WidgetBuilder builder) =>
-                  PageRouteBuilder<T>(
-            settings: settings,
-            pageBuilder: (
-              final BuildContext context,
-              final Animation<double> animation,
-              final Animation<double> secondaryAnimation,
-            ) =>
-                builder(context),
+        child: Provider<RuiSettingsData>.value(
+          value: settings,
+          child: WidgetsApp(
+            textStyle: theme.textTheme.body,
+            color: theme.colorScheme.background,
+            builder: (final _, final __) => const RuiHomePage(),
           ),
         ),
       );
