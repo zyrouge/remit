@@ -3,49 +3,32 @@ import '../theme/animation_durations.dart';
 import '../theme/color_scheme.dart';
 import '../theme/states.dart';
 import '../theme/theme.dart';
+import 'interactive.dart';
 
-enum RuiButtonState {
-  normal,
-  hovered,
-  active,
-  disabled;
-
-  RuiThemeState toThemeState() => switch (this) {
-        RuiButtonState.normal => RuiThemeState.normal,
-        RuiButtonState.hovered => RuiThemeState.hovered,
-        RuiButtonState.active => RuiThemeState.active,
-        RuiButtonState.disabled => RuiThemeState.disabled,
-      };
-}
-
-typedef RuiButtonStatedValue<T> = T Function(
-  BuildContext context,
-  RuiButtonState state,
-);
-
-class RuiButtonTheme {
-  const RuiButtonTheme({
+class RuiButtonStyle {
+  const RuiButtonStyle({
     required this.color,
     required this.textStyle,
     required this.padding,
     required this.borderRadius,
-    required this.width,
-    required this.height,
+    this.width,
+    this.height,
   });
 
-  factory RuiButtonTheme.primary({
+  factory RuiButtonStyle.primary({
     final TextStyle? textStyle,
     final EdgeInsets? padding,
     final BorderRadius? borderRadius,
     final double? width,
     final double? height,
   }) =>
-      RuiButtonTheme(
-        color: (final BuildContext context, final RuiButtonState state) =>
+      RuiButtonStyle(
+        color: (final BuildContext context, final RuiInteractiveState state) =>
             RuiTheme.of(context)
                 .colorScheme
                 .primaryWhenState(state.toThemeState()),
-        textStyle: (final BuildContext context, final RuiButtonState state) {
+        textStyle:
+            (final BuildContext context, final RuiInteractiveState state) {
           final RuiTheme theme = RuiTheme.of(context);
           final RuiColorScheme colorScheme = theme.colorScheme;
           final TextStyle nTextStyle = textStyle ?? theme.textTheme.body;
@@ -59,19 +42,20 @@ class RuiButtonTheme {
         height: height,
       );
 
-  factory RuiButtonTheme.surface({
+  factory RuiButtonStyle.surface({
     final TextStyle? textStyle,
     final EdgeInsets? padding,
     final BorderRadius? borderRadius,
     final double? width,
     final double? height,
   }) =>
-      RuiButtonTheme(
-        color: (final BuildContext context, final RuiButtonState state) =>
+      RuiButtonStyle(
+        color: (final BuildContext context, final RuiInteractiveState state) =>
             RuiTheme.of(context)
                 .colorScheme
                 .surfaceWhenState(state.toThemeState()),
-        textStyle: (final BuildContext context, final RuiButtonState state) {
+        textStyle:
+            (final BuildContext context, final RuiInteractiveState state) {
           final RuiTheme theme = RuiTheme.of(context);
           final RuiColorScheme colorScheme = theme.colorScheme;
           final TextStyle nTextStyle = textStyle ?? theme.textTheme.body;
@@ -85,8 +69,8 @@ class RuiButtonTheme {
         height: height,
       );
 
-  final RuiButtonStatedValue<Color> color;
-  final RuiButtonStatedValue<TextStyle> textStyle;
+  final RuiInteractiveStateCallback<Color> color;
+  final RuiInteractiveStateCallback<TextStyle> textStyle;
   final EdgeInsets padding;
   final BorderRadius borderRadius;
   final double? height;
@@ -99,14 +83,14 @@ class RuiButtonTheme {
 
 class RuiButton extends StatefulWidget {
   const RuiButton({
-    required this.theme,
+    required this.style,
     required this.child,
     required this.onClick,
     this.enabled = true,
     super.key,
   });
 
-  final RuiButtonTheme theme;
+  final RuiButtonStyle style;
   final bool enabled;
   final Widget child;
   final VoidCallback onClick;
@@ -117,35 +101,49 @@ class RuiButton extends StatefulWidget {
 
 class _RuiButtonState extends State<RuiButton> {
   bool isHovered = false;
+  bool isFocused = false;
 
-  RuiButtonState toButtonState() {
-    if (!widget.enabled) return RuiButtonState.disabled;
-    if (isHovered) return RuiButtonState.hovered;
-    return RuiButtonState.normal;
+  RuiInteractiveState toInteractiveState() {
+    if (!widget.enabled) return RuiInteractiveState.disabled;
+    if (isFocused) return RuiInteractiveState.active;
+    if (isHovered) return RuiInteractiveState.hovered;
+    return RuiInteractiveState.normal;
   }
 
   @override
   Widget build(final BuildContext context) {
-    final RuiButtonState state = toButtonState();
-    return GestureDetector(
-      onTap: widget.onClick,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (final _) => updateHovered(true),
-        onExit: (final _) => updateHovered(false),
-        child: AnimatedContainer(
-          duration: RuiAnimationDurations.quickest,
-          alignment: Alignment.center,
-          width: widget.theme.width,
-          height: widget.theme.height,
-          padding: widget.theme.padding,
-          decoration: BoxDecoration(
-            color: widget.theme.color(context, state),
-            borderRadius: widget.theme.borderRadius,
-          ),
-          child: DefaultTextStyle.merge(
-            style: widget.theme.textStyle(context, state),
-            child: widget.child,
+    final RuiInteractiveState state = toInteractiveState();
+    return Focus(
+      canRequestFocus: true,
+      onFocusChange: (final bool focused) {
+        setState(() {
+          isFocused = focused;
+        });
+      },
+      child: GestureDetector(
+        onTap: widget.onClick,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (final _) => updateHovered(true),
+          onExit: (final _) => updateHovered(false),
+          child: AnimatedContainer(
+            duration: RuiAnimationDurations.quickest,
+            alignment: Alignment.center,
+            width: widget.style.width,
+            height: widget.style.height,
+            padding: widget.style.padding,
+            decoration: BoxDecoration(
+              color: widget.style.color(context, state),
+              borderRadius: widget.style.borderRadius,
+              // border: widget.style.strokeColor != null
+              //     ? Border.all(color: widget.style.strokeColor!(context, state))
+              //     : null,
+            ),
+            child: AnimatedDefaultTextStyle(
+              duration: RuiAnimationDurations.quickest,
+              style: widget.style.textStyle(context, state),
+              child: widget.child,
+            ),
           ),
         ),
       ),

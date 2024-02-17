@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'package:animations/animations.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import '../services/assets.dart';
 import '../services/ignition.dart';
 import 'app.dart';
+import 'basic/logo.dart';
+import 'basic/spacer.dart';
+import 'theme/animation_durations.dart';
 import 'theme/colors.dart';
 import 'theme/text_theme.dart';
 
@@ -22,7 +24,9 @@ class _RuiSplashState extends State<RuiSplash> {
   @override
   void initState() {
     super.initState();
-    RuiIgnition.initialize(() {
+    RuiIgnition.initialize(() async {
+      if (!mounted) return;
+      await Future<void>.delayed(const Duration(milliseconds: 500));
       if (!mounted) return;
       setState(() {
         ready = true;
@@ -30,34 +34,42 @@ class _RuiSplashState extends State<RuiSplash> {
     });
   }
 
-  Widget buildSplash(final BuildContext context) => Directionality(
-        textDirection: TextDirection.ltr,
-        child: ColoredBox(
-          color: RuiColors.dark900,
-          child: DefaultTextStyle(
-            style: RuiTextTheme.standard.headline,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SvgPicture.asset(
-                  RuiImageAssets.logoTransparent,
-                  width: 75,
-                ),
-                const SizedBox(height: 20),
-                const _RuiSplashLoadingIndicator(),
-              ],
-            ),
+  Widget buildSplash(final BuildContext context) => SizedBox.expand(
+        child: DefaultTextStyle(
+          style: RuiTextTheme.standard.headline,
+          child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              RuiLogo(size: 75, color: RuiColors.white),
+              RuiSpacer.verticalRelaxed,
+              _RuiSplashLoadingIndicator(),
+            ],
           ),
         ),
       );
 
   @override
-  Widget build(final BuildContext context) {
-    if (!ready) {
-      return buildSplash(context);
-    }
-    return const RuiApp();
-  }
+  Widget build(final BuildContext context) => Directionality(
+        textDirection: TextDirection.ltr,
+        child: ColoredBox(
+          color: RuiColors.dark900,
+          child: PageTransitionSwitcher(
+            duration: RuiAnimationDurations.slow,
+            transitionBuilder: (
+              final Widget child,
+              final Animation<double> animation,
+              final Animation<double> secondaryAnimation,
+            ) =>
+                FadeThroughTransition(
+              animation: animation,
+              secondaryAnimation: secondaryAnimation,
+              fillColor: RuiColors.dark900,
+              child: child,
+            ),
+            child: ready ? const RuiApp() : buildSplash(context),
+          ),
+        ),
+      );
 }
 
 class _RuiSplashLoadingIndicator extends StatefulWidget {

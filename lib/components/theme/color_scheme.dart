@@ -39,7 +39,7 @@ class RuiColorScheme {
   static const RuiColorScheme light = RuiColorScheme(
     primary: RuiColors.blue500,
     onPrimary: RuiColors.white,
-    primaryVariant: RuiColors.blue400,
+    primaryVariant: RuiColors.blue600,
     onPrimaryVariant: RuiColors.white,
     background: RuiColors.white,
     onBackground: RuiColors.black,
@@ -63,12 +63,12 @@ class RuiColorScheme {
     onBackground: RuiColors.white,
     backgroundVariant: RuiColors.dark800,
     onBackgroundVariant: RuiColors.white,
-    surface: RuiColors.dark700,
+    surface: RuiColors.dark600,
     onSurface: RuiColors.white,
-    surfaceVariant: RuiColors.dark600,
+    surfaceVariant: RuiColors.dark700,
     onSurfaceVariant: RuiColors.white,
     disabled: RuiColors.dark500,
     onDisabled: RuiColors.dark300,
-    dimmed: RuiColors.dark300,
+    dimmed: RuiColors.dark200,
   );
 }

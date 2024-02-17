@@ -26,4 +26,10 @@ class RuiTheme extends InheritedWidget {
     assert(result != null, 'No RuiTheme found in context');
     return result!;
   }
+
+  static RuiColorScheme colorSchemeOf(final BuildContext context) =>
+      RuiTheme.of(context).colorScheme;
+
+  static RuiTextTheme textThemeOf(final BuildContext context) =>
+      RuiTheme.of(context).textTheme;
 }

@@ -9,3 +9,11 @@ description = "Receive"
 [[keys]]
 name = "Settings"
 description = "Settings"
+
+[[keys]]
+name = "ChooseABelowOptionWhenYouAreReady"
+description = "Choose a below option when you are ready."
+
+[[keys]]
+name = "Back"
+description = "Back"

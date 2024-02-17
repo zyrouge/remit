@@ -1,10 +1,13 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../pages/home.dart';
+import '../pages/settings.dart';
 import '../services/settings/settings.dart';
 import '../services/translations/translation.dart';
 import '../services/translations/translations.dart';
 import 'localized.dart';
+import 'theme/animation_durations.dart';
 import 'theme/color_scheme.dart';
 import 'theme/text_theme.dart';
 import 'theme/theme.dart';
@@ -17,6 +20,9 @@ class RuiApp extends StatefulWidget {
 
   @override
   State<RuiApp> createState() => _RuiAppState();
+
+  static const String home = '/';
+  static const String settings = '/settings';
 }
 
 class _RuiAppState extends State<RuiApp> {
@@ -52,9 +58,34 @@ class _RuiAppState extends State<RuiApp> {
               Provider<RuiSettingsData>.value(value: settings),
             ],
             child: WidgetsApp(
-              textStyle: theme.textTheme.body,
+              textStyle: theme.textTheme.body
+                  .copyWith(color: theme.colorScheme.onBackground),
               color: theme.colorScheme.background,
-              builder: (final _, final __) => const RuiHomePage(),
+              initialRoute: RuiApp.home,
+              routes: <String, WidgetBuilder>{
+                RuiApp.home: (final _) => const RuiHomePage(),
+                RuiApp.settings: (final _) => const RuiSettingsPage(),
+              },
+              pageRouteBuilder: <T>(
+                final RouteSettings settings,
+                final WidgetBuilder builder,
+              ) =>
+                  PageRouteBuilder<T>(
+                settings: settings,
+                transitionDuration: RuiAnimationDurations.slow,
+                pageBuilder: (
+                  final BuildContext context,
+                  final Animation<double> animation,
+                  final Animation<double> secondaryAnimation,
+                ) =>
+                    SharedAxisTransition(
+                  animation: animation,
+                  secondaryAnimation: secondaryAnimation,
+                  transitionType: SharedAxisTransitionType.horizontal,
+                  fillColor: theme.colorScheme.background,
+                  child: builder(context),
+                ),
+              ),
             ),
           ),
         ),

@@ -1,8 +1,11 @@
 import 'package:flutter/widgets.dart';
 
 abstract class RuiColors {
+  static const Color transparent = Color(0x00000000);
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
+
+  static const Color red500 = Color(0xFFEF4444);
 
   static const Color blue400 = Color(0xFF2563Eb);
   static const Color blue500 = Color(0xFF1D4ED8);
@@ -16,12 +19,13 @@ abstract class RuiColors {
   static const Color light500 = Color(0xFF878787);
   static const Color light600 = Color(0xFF6E6E6E);
 
-  // Generated using https://www.tints.dev/dark/171717 (900/90-0)
-  static const Color dark300 = Color(0xFFA1A1A1);
-  static const Color dark400 = Color(0xFF8A8A8A);
-  static const Color dark500 = Color(0xFF737373);
-  static const Color dark600 = Color(0xFF5C5C5C);
-  static const Color dark700 = Color(0xFF454545);
-  static const Color dark800 = Color(0xFF2E2E2E);
+  // Generated using https://www.tints.dev/dark/171717 (900/50-0)
+  static const Color dark200 = Color(0xFF696969);
+  static const Color dark300 = Color(0xFF5C5C5C);
+  static const Color dark400 = Color(0xFF525252);
+  static const Color dark500 = Color(0xFF454545);
+  static const Color dark600 = Color(0xFF3B3B3B);
+  static const Color dark700 = Color(0xFF2E2E2E);
+  static const Color dark800 = Color(0xFF242424);
   static const Color dark900 = Color(0xFF171717);
 }
