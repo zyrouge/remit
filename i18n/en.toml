@@ -3,3 +3,4 @@ locale = "en"
 [keys]
 Send = "Send"
 Receive = "Receive"
+Settings = "Settings"

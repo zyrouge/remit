@@ -5,3 +5,7 @@ description = "Send"
 [[keys]]
 name = "Receive"
 description = "Receive"
+
+[[keys]]
+name = "Settings"
+description = "Settings"

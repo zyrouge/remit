@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import '../theme/animation_durations.dart';
 import '../theme/color_scheme.dart';
 import '../theme/states.dart';
 import '../theme/theme.dart';
@@ -27,11 +28,17 @@ class RuiButtonTheme {
     required this.color,
     required this.textStyle,
     required this.padding,
+    required this.borderRadius,
+    required this.width,
+    required this.height,
   });
 
   factory RuiButtonTheme.primary({
     final TextStyle? textStyle,
     final EdgeInsets? padding,
+    final BorderRadius? borderRadius,
+    final double? width,
+    final double? height,
   }) =>
       RuiButtonTheme(
         color: (final BuildContext context, final RuiButtonState state) =>
@@ -47,11 +54,17 @@ class RuiButtonTheme {
           return nTextStyle.copyWith(color: color);
         },
         padding: padding ?? defaultPadding,
+        borderRadius: borderRadius ?? defaultBorderRadius,
+        width: width,
+        height: height,
       );
 
   factory RuiButtonTheme.surface({
     final TextStyle? textStyle,
     final EdgeInsets? padding,
+    final BorderRadius? borderRadius,
+    final double? width,
+    final double? height,
   }) =>
       RuiButtonTheme(
         color: (final BuildContext context, final RuiButtonState state) =>
@@ -67,12 +80,19 @@ class RuiButtonTheme {
           return nTextStyle.copyWith(color: color);
         },
         padding: padding ?? defaultPadding,
+        borderRadius: borderRadius ?? defaultBorderRadius,
+        width: width,
+        height: height,
       );
 
   final RuiButtonStatedValue<Color> color;
   final RuiButtonStatedValue<TextStyle> textStyle;
   final EdgeInsets padding;
+  final BorderRadius borderRadius;
+  final double? height;
+  final double? width;
 
+  static final BorderRadius defaultBorderRadius = BorderRadius.circular(8);
   static const EdgeInsets defaultPadding =
       EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 }
@@ -110,12 +130,19 @@ class _RuiButtonState extends State<RuiButton> {
     return GestureDetector(
       onTap: widget.onClick,
       child: MouseRegion(
+        cursor: SystemMouseCursors.click,
         onEnter: (final _) => updateHovered(true),
         onExit: (final _) => updateHovered(false),
         child: AnimatedContainer(
-          duration: Duration(milliseconds: 50),
-          color: widget.theme.color(context, state),
+          duration: RuiAnimationDurations.quickest,
+          alignment: Alignment.center,
+          width: widget.theme.width,
+          height: widget.theme.height,
           padding: widget.theme.padding,
+          decoration: BoxDecoration(
+            color: widget.theme.color(context, state),
+            borderRadius: widget.theme.borderRadius,
+          ),
           child: DefaultTextStyle.merge(
             style: widget.theme.textStyle(context, state),
             child: widget.child,
