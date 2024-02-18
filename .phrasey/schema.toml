@@ -25,3 +25,15 @@ description = "Username"
 [[keys]]
 name = "Theme"
 description = "Theme"
+
+[[keys]]
+name = "System"
+description = "System"
+
+[[keys]]
+name = "Light"
+description = "Light"
+
+[[keys]]
+name = "Dark"
+description = "Dark"

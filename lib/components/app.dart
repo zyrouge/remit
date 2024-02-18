@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:animations/animations.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../pages/home.dart';
@@ -23,6 +26,8 @@ class RuiApp extends StatefulWidget {
 
   static const String home = '/';
   static const String settings = '/settings';
+
+  static Brightness get systemThemeMode => SchedulerBinding.instance.platformDispatcher.platformBrightness;
 }
 
 class _RuiAppState extends State<RuiApp> {
@@ -95,6 +100,10 @@ class _RuiAppState extends State<RuiApp> {
     settings = nSettings;
     theme = RuiThemeData(
       colorScheme: switch (nSettings.themeMode) {
+        RuiThemeMode.system =>
+          RuiApp.systemThemeMode == Brightness.light
+              ? RuiColorScheme.light
+              : RuiColorScheme.dark,
         RuiThemeMode.light => RuiColorScheme.light,
         RuiThemeMode.dark => RuiColorScheme.dark,
       },

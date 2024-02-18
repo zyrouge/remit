@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:flutter/widgets.dart';
 import '../services/ignition.dart';
@@ -34,42 +35,59 @@ class _RuiSplashState extends State<RuiSplash> {
     });
   }
 
-  Widget buildSplash(final BuildContext context) => SizedBox.expand(
+  Widget buildSplash(
+    final BuildContext context, {
+    required final Color foregroundColor,
+  }) =>
+      SizedBox.expand(
         child: DefaultTextStyle(
           style: RuiTextTheme.standard.headline,
-          child: const Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              RuiLogo(size: 75, color: RuiColors.white),
+              RuiLogo(size: 75, color: foregroundColor),
               RuiSpacer.verticalRelaxed,
-              _RuiSplashLoadingIndicator(),
+              const _RuiSplashLoadingIndicator(),
             ],
           ),
         ),
       );
 
   @override
-  Widget build(final BuildContext context) => Directionality(
-        textDirection: TextDirection.ltr,
-        child: ColoredBox(
-          color: RuiColors.dark900,
-          child: PageTransitionSwitcher(
-            duration: RuiAnimationDurations.slow,
-            transitionBuilder: (
-              final Widget child,
-              final Animation<double> animation,
-              final Animation<double> secondaryAnimation,
-            ) =>
-                FadeThroughTransition(
-              animation: animation,
-              secondaryAnimation: secondaryAnimation,
-              fillColor: RuiColors.dark900,
-              child: child,
-            ),
-            child: ready ? const RuiApp() : buildSplash(context),
+  Widget build(final BuildContext context) {
+    final Brightness systemThemeMode = RuiApp.systemThemeMode;
+    final Color foregroundColor = switch (systemThemeMode) {
+      Brightness.light => RuiColors.black,
+      Brightness.dark => RuiColors.white,
+    };
+    final Color backgroundColor = switch (systemThemeMode) {
+      Brightness.light => RuiColors.light100,
+      Brightness.dark => RuiColors.dark900,
+    };
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: ColoredBox(
+        color: backgroundColor,
+        child: PageTransitionSwitcher(
+          duration: RuiAnimationDurations.slow,
+          transitionBuilder: (
+            final Widget child,
+            final Animation<double> animation,
+            final Animation<double> secondaryAnimation,
+          ) =>
+              FadeThroughTransition(
+            animation: animation,
+            secondaryAnimation: secondaryAnimation,
+            fillColor: backgroundColor,
+            child: child,
           ),
+          child: ready
+              ? const RuiApp()
+              : buildSplash(context, foregroundColor: foregroundColor),
         ),
-      );
+      ),
+    );
+  }
 }
 
 class _RuiSplashLoadingIndicator extends StatefulWidget {

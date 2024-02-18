@@ -1,13 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:path/path.dart' as p;
+import '../../components/localized.dart';
 import '../paths.dart';
 
 part 'settings.freezed.dart';
 part 'settings.g.dart';
 
-enum RuiThemeMode { light, dark }
+enum RuiThemeMode {
+  system,
+  light,
+  dark;
+
+  String toLocalizedString(final BuildContext context) => switch (this) {
+        system => context.t.system,
+        light => context.t.light,
+        dark => context.t.dark,
+      };
+}
 
 @freezed
 class RuiSettingsData with _$RuiSettingsData {

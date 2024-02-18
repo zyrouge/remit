@@ -137,7 +137,7 @@ class RuiButtonStyle {
             RuiInteractiveState.normal => null,
             RuiInteractiveState.active ||
             RuiInteractiveState.hovered =>
-              colorScheme.primary,
+              colorScheme.primaryLightVariant,
             RuiInteractiveState.disabled => colorScheme.disabled,
           };
           return nTextStyle.copyWith(color: color);
@@ -212,7 +212,7 @@ class _RuiButtonState extends State<RuiButton> {
           onEnter: (final _) => updateHovered(true),
           onExit: (final _) => updateHovered(false),
           child: AnimatedContainer(
-            duration: RuiAnimationDurations.quickest,
+            duration: RuiAnimationDurations.fastest,
             alignment: Alignment.center,
             width: widget.style.width,
             height: widget.style.height,
@@ -225,7 +225,7 @@ class _RuiButtonState extends State<RuiButton> {
                   : null,
             ),
             child: AnimatedDefaultTextStyle(
-              duration: RuiAnimationDurations.quickest,
+              duration: RuiAnimationDurations.fastest,
               style: widget.style.textStyle(context, state),
               child: widget.child,
             ),

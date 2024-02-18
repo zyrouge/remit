@@ -7,6 +7,8 @@ class RuiColorScheme {
     required this.onPrimary,
     required this.primaryVariant,
     required this.onPrimaryVariant,
+    required this.primaryLightVariant,
+    required this.onPrimaryLightVariant,
     required this.background,
     required this.onBackground,
     required this.backgroundVariant,
@@ -24,6 +26,8 @@ class RuiColorScheme {
   final Color onPrimary;
   final Color primaryVariant;
   final Color onPrimaryVariant;
+  final Color primaryLightVariant;
+  final Color onPrimaryLightVariant;
   final Color background;
   final Color onBackground;
   final Color backgroundVariant;
@@ -41,6 +45,8 @@ class RuiColorScheme {
     onPrimary: RuiColors.white,
     primaryVariant: RuiColors.blue600,
     onPrimaryVariant: RuiColors.white,
+    primaryLightVariant: RuiColors.blue400,
+    onPrimaryLightVariant: RuiColors.white,
     background: RuiColors.white,
     onBackground: RuiColors.black,
     backgroundVariant: RuiColors.light100,
@@ -59,6 +65,8 @@ class RuiColorScheme {
     onPrimary: RuiColors.white,
     primaryVariant: RuiColors.blue600,
     onPrimaryVariant: RuiColors.white,
+    primaryLightVariant: RuiColors.blue400,
+    onPrimaryLightVariant: RuiColors.white,
     background: RuiColors.dark900,
     onBackground: RuiColors.white,
     backgroundVariant: RuiColors.dark800,

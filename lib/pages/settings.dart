@@ -10,6 +10,7 @@ import '../components/localized.dart';
 import '../components/theme/responsivity.dart';
 import '../components/theme/theme.dart';
 import '../services/settings/settings.dart';
+import '../utils/list.dart';
 
 class RuiSettingsPage extends StatefulWidget {
   const RuiSettingsPage({
@@ -52,10 +53,9 @@ class _RuiSettingsPageState extends State<RuiSettingsPage> {
           RuiSpacer.verticalTight,
           RuiDropdown<RuiThemeMode>(
             value: settings.themeMode,
-            labels: <RuiThemeMode, String>{
-              RuiThemeMode.light: 'light',
-              RuiThemeMode.dark: 'dark',
-            },
+            labels: RuiThemeMode.values.associateWith(
+              (final RuiThemeMode x) => x.toLocalizedString(context),
+            ),
             style: RuiButtonStyle.outlined(),
             popupStyle: RuiDropdownPopupStyle.standard(context),
             itemStyle: RuiButtonStyle.text(),
