@@ -27,6 +27,6 @@ class RuiTextTheme {
       fontWeight: FontWeight.bold,
     ),
     body: TextStyle(fontFamily: fontFamily, fontSize: 14),
-    small: TextStyle(fontFamily: fontFamily, fontSize: 10),
+    small: TextStyle(fontFamily: fontFamily, fontSize: 12),
   );
 }

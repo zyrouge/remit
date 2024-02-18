@@ -25,7 +25,7 @@ enum RuiThemeMode {
 class RuiSettingsData with _$RuiSettingsData {
   const factory RuiSettingsData({
     final String? locale,
-    @Default(RuiThemeMode.dark) final RuiThemeMode themeMode,
+    @Default(RuiThemeMode.system) final RuiThemeMode themeMode,
     final String? username,
   }) = _RuiSettingsData;
 

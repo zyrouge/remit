@@ -20,6 +20,7 @@ class RuiColorScheme {
     required this.disabled,
     required this.onDisabled,
     required this.dimmed,
+    required this.error,
   });
 
   final Color primary;
@@ -39,6 +40,7 @@ class RuiColorScheme {
   final Color disabled;
   final Color onDisabled;
   final Color dimmed;
+  final Color error;
 
   static const RuiColorScheme light = RuiColorScheme(
     primary: RuiColors.blue500,
@@ -58,6 +60,7 @@ class RuiColorScheme {
     disabled: RuiColors.light400,
     onDisabled: RuiColors.light600,
     dimmed: RuiColors.light600,
+    error: RuiColors.red500,
   );
 
   static const RuiColorScheme dark = RuiColorScheme(
@@ -78,5 +81,6 @@ class RuiColorScheme {
     disabled: RuiColors.dark500,
     onDisabled: RuiColors.dark300,
     dimmed: RuiColors.dark200,
+    error: RuiColors.red500,
   );
 }

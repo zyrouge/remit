@@ -1,9 +1,11 @@
 import 'package:flutter/widgets.dart';
 import '../theme/animation_durations.dart';
 import '../theme/color_scheme.dart';
+import '../theme/colors.dart';
 import '../theme/states.dart';
 import '../theme/theme.dart';
 import 'interactive.dart';
+import 'spacer.dart';
 
 class RuiTextFieldStyle {
   const RuiTextFieldStyle({
@@ -84,6 +86,7 @@ class RuiTextField extends StatefulWidget {
     required this.onFinished,
     this.type = TextInputType.text,
     this.enabled = true,
+    this.validate,
     super.key,
   });
 
@@ -91,6 +94,7 @@ class RuiTextField extends StatefulWidget {
   final TextEditingController controller;
   final TextInputType type;
   final bool enabled;
+  final String? Function(String)? validate;
   final void Function(String) onChanged;
   final void Function(String) onFinished;
 
@@ -100,6 +104,7 @@ class RuiTextField extends StatefulWidget {
 
 class _RuiTextFieldState extends State<RuiTextField> {
   late final FocusNode focusNode;
+  String? errorLabel;
   bool isHovered = false;
   bool isFocused = false;
 
@@ -130,51 +135,75 @@ class _RuiTextFieldState extends State<RuiTextField> {
   @override
   Widget build(final BuildContext context) {
     final RuiInteractiveState state = toInteractiveState();
-    return MouseRegion(
-      onEnter: (final _) => updateHovered(true),
-      onExit: (final _) => updateHovered(false),
-      cursor: SystemMouseCursors.text,
-      child: GestureDetector(
-        onTap: widget.enabled ? focusNode.requestFocus : null,
-        child: AnimatedContainer(
-          duration: RuiAnimationDurations.fast,
-          width: widget.style.width,
-          height: widget.style.height,
-          padding: widget.style.padding,
-          decoration: BoxDecoration(
-            color: widget.style.color(context, state),
-            borderRadius: widget.style.borderRadius,
-            border: widget.style.strokeColor != null
-                ? Border.all(color: widget.style.strokeColor!(context, state))
-                : null,
-          ),
-          child: AnimatedDefaultTextStyle(
-            duration: RuiAnimationDurations.fast,
-            style: widget.style.textStyle(context, state),
-            child: switch (widget.enabled) {
-              true => EditableText(
-                  controller: widget.controller,
-                  focusNode: focusNode,
-                  style: DefaultTextStyle.of(context).style,
-                  cursorWidth: 1,
-                  cursorColor: widget.style.cursorColor,
-                  backgroundCursorColor: widget.style.inactiveCursorColor,
-                  selectionColor: widget.style.selectionColor,
-                  keyboardType: widget.type,
-                  onChanged: (final String value) => widget.onChanged(value),
-                  onSubmitted: (final String value) => widget.onFinished(value),
-                ),
-              false => Text(widget.controller.text),
-            },
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        MouseRegion(
+          onEnter: (final _) => updateHovered(true),
+          onExit: (final _) => updateHovered(false),
+          cursor: SystemMouseCursors.text,
+          child: GestureDetector(
+            onTap: widget.enabled ? focusNode.requestFocus : null,
+            child: AnimatedContainer(
+              duration: RuiAnimationDurations.fast,
+              width: widget.style.width,
+              height: widget.style.height,
+              padding: widget.style.padding,
+              decoration: BoxDecoration(
+                color: widget.style.color(context, state),
+                borderRadius: widget.style.borderRadius,
+                border: widget.style.strokeColor != null
+                    ? Border.all(
+                        color: widget.style.strokeColor!(context, state))
+                    : null,
+              ),
+              child: AnimatedDefaultTextStyle(
+                duration: RuiAnimationDurations.fast,
+                style: widget.style.textStyle(context, state),
+                child: switch (widget.enabled) {
+                  true => EditableText(
+                      controller: widget.controller,
+                      focusNode: focusNode,
+                      style: DefaultTextStyle.of(context).style,
+                      cursorWidth: 1,
+                      cursorColor: widget.style.cursorColor,
+                      backgroundCursorColor: widget.style.inactiveCursorColor,
+                      selectionColor: widget.style.selectionColor,
+                      keyboardType: widget.type,
+                      onChanged: updateTextChanged,
+                      onSubmitted: widget.onFinished,
+                    ),
+                  false => Text(widget.controller.text),
+                },
+              ),
+            ),
           ),
         ),
-      ),
+        if (errorLabel != null) ...<Widget>[
+          RuiSpacer.verticalTight,
+          Text(
+            errorLabel!,
+            style: RuiTheme.textThemeOf(context)
+                .small
+                .copyWith(color: RuiTheme.colorSchemeOf(context).error),
+          ),
+        ],
+      ],
     );
   }
 
   void updateHovered(final bool value) {
     setState(() {
       isHovered = value;
+    });
+  }
+
+  void updateTextChanged(final String value) {
+    widget.onChanged(value);
+    if (widget.validate == null) return;
+    setState(() {
+      errorLabel = widget.validate!(value);
     });
   }
 }

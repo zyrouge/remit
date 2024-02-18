@@ -43,7 +43,13 @@ class _RuiSettingsPageState extends State<RuiSettingsPage> {
           Text(context.t.username),
           RuiSpacer.verticalTight,
           _RuiSettingsTextField(
-            value: settings.username ?? 'demo-user',
+            value: settings.username ?? '',
+            validate: (final String value) {
+              if (value.isNotEmpty && value.trim().length < 4) {
+                return 'Username too short';
+              }
+              return null;
+            },
             onChanged: (final String value) {
               RuiSettings.update(settings.copyWith(username: value));
             },
@@ -73,9 +79,11 @@ class _RuiSettingsTextField extends StatefulWidget {
   const _RuiSettingsTextField({
     required this.value,
     required this.onChanged,
+    this.validate,
   });
 
   final String value;
+  final String? Function(String)? validate;
   final void Function(String) onChanged;
 
   @override
@@ -101,6 +109,7 @@ class __RuiStateSettingsTextField extends State<_RuiSettingsTextField> {
   Widget build(final BuildContext context) => RuiTextField(
         style: RuiTextFieldStyle.outlined(context),
         controller: controller,
+        validate: widget.validate,
         onChanged: (final _) {},
         onFinished: (final String value) {
           if (value == widget.value) return;
