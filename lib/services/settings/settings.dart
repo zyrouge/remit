@@ -32,6 +32,7 @@ abstract class RuiSettings {
   static Future<void> update(final RuiSettingsData data) async {
     await write(data);
     settings = data;
+    onSettingsChange?.call(data);
   }
 
   static Future<RuiSettingsData> read() async {

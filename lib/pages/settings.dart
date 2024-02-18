@@ -1,9 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../components/basic/back_button.dart';
+import '../components/basic/button.dart';
+import '../components/basic/dropdown.dart';
 import '../components/basic/scaffold.dart';
 import '../components/basic/spacer.dart';
 import '../components/basic/text_field.dart';
+import '../components/localized.dart';
 import '../components/theme/responsivity.dart';
 import '../components/theme/theme.dart';
 import '../services/settings/settings.dart';
@@ -21,6 +24,7 @@ class _RuiSettingsPageState extends State<RuiSettingsPage> {
   @override
   Widget build(final BuildContext context) {
     final RuiSettingsData settings = context.watch<RuiSettingsData>();
+    final RuiTheme theme = RuiTheme.of(context);
     return RuiScaffold(
       maxWidth: RuiResponsivity.md,
       body: Column(
@@ -33,17 +37,30 @@ class _RuiSettingsPageState extends State<RuiSettingsPage> {
             },
           ),
           RuiSpacer.verticalCozy,
-          Text(
-            'Settings',
-            style: RuiTheme.textThemeOf(context).headline,
-          ),
-          RuiSpacer.verticalRelaxed,
-          Text('Username'),
+          Text(context.t.settings, style: theme.textTheme.headline),
+          RuiSpacer.verticalCozy,
+          Text(context.t.username),
           RuiSpacer.verticalTight,
           _RuiSettingsTextField(
             value: settings.username ?? 'demo-user',
             onChanged: (final String value) {
               RuiSettings.update(settings.copyWith(username: value));
+            },
+          ),
+          RuiSpacer.verticalRelaxed,
+          Text(context.t.theme),
+          RuiSpacer.verticalTight,
+          RuiDropdown<RuiThemeMode>(
+            value: settings.themeMode,
+            labels: <RuiThemeMode, String>{
+              RuiThemeMode.light: 'light',
+              RuiThemeMode.dark: 'dark',
+            },
+            style: RuiButtonStyle.outlined(),
+            popupStyle: RuiDropdownPopupStyle.standard(context),
+            itemStyle: RuiButtonStyle.text(),
+            onChanged: (final RuiThemeMode value) {
+              RuiSettings.update(settings.copyWith(themeMode: value));
             },
           ),
         ],
@@ -82,7 +99,7 @@ class __RuiStateSettingsTextField extends State<_RuiSettingsTextField> {
 
   @override
   Widget build(final BuildContext context) => RuiTextField(
-        style: RuiTextFieldStyle.standard(context),
+        style: RuiTextFieldStyle.outlined(context),
         controller: controller,
         onChanged: (final _) {},
         onFinished: (final String value) {

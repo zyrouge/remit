@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import '../theme/animation_durations.dart';
 import '../theme/color_scheme.dart';
+import '../theme/colors.dart';
 import '../theme/states.dart';
 import '../theme/theme.dart';
 import 'interactive.dart';
@@ -9,8 +10,9 @@ class RuiButtonStyle {
   const RuiButtonStyle({
     required this.color,
     required this.textStyle,
-    required this.padding,
-    required this.borderRadius,
+    this.padding = defaultPadding,
+    this.borderRadius = defaultBorderRadius,
+    this.strokeColor,
     this.width,
     this.height,
   });
@@ -31,7 +33,8 @@ class RuiButtonStyle {
             (final BuildContext context, final RuiInteractiveState state) {
           final RuiTheme theme = RuiTheme.of(context);
           final RuiColorScheme colorScheme = theme.colorScheme;
-          final TextStyle nTextStyle = textStyle ?? theme.textTheme.body;
+          final TextStyle nTextStyle =
+              textStyle ?? DefaultTextStyle.of(context).style;
           final Color color =
               colorScheme.onPrimaryWhenState(state.toThemeState());
           return nTextStyle.copyWith(color: color);
@@ -58,7 +61,8 @@ class RuiButtonStyle {
             (final BuildContext context, final RuiInteractiveState state) {
           final RuiTheme theme = RuiTheme.of(context);
           final RuiColorScheme colorScheme = theme.colorScheme;
-          final TextStyle nTextStyle = textStyle ?? theme.textTheme.body;
+          final TextStyle nTextStyle =
+              textStyle ?? DefaultTextStyle.of(context).style;
           final Color color =
               colorScheme.onSurfaceWhenState(state.toThemeState());
           return nTextStyle.copyWith(color: color);
@@ -69,14 +73,92 @@ class RuiButtonStyle {
         height: height,
       );
 
+  factory RuiButtonStyle.outlined({
+    final TextStyle? textStyle,
+    final EdgeInsets? padding,
+    final BorderRadius? borderRadius,
+    final double? width,
+    final double? height,
+  }) =>
+      RuiButtonStyle(
+        color: (final BuildContext context, final RuiInteractiveState state) =>
+            RuiTheme.of(context)
+                .colorScheme
+                .backgroundWhenState(state.toThemeState()),
+        strokeColor:
+            (final BuildContext context, final RuiInteractiveState state) {
+          final RuiColorScheme colorScheme = RuiTheme.colorSchemeOf(context);
+          return switch (state) {
+            RuiInteractiveState.active ||
+            RuiInteractiveState.hovered =>
+              colorScheme.surface,
+            _ => colorScheme.backgroundVariant,
+          };
+        },
+        textStyle:
+            (final BuildContext context, final RuiInteractiveState state) {
+          final RuiTheme theme = RuiTheme.of(context);
+          final RuiColorScheme colorScheme = theme.colorScheme;
+          final TextStyle nTextStyle =
+              textStyle ?? DefaultTextStyle.of(context).style;
+          final Color color =
+              colorScheme.onSurfaceWhenState(state.toThemeState());
+          return nTextStyle.copyWith(color: color);
+        },
+        padding: padding ?? defaultPadding,
+        borderRadius: borderRadius ?? defaultBorderRadius,
+        width: width,
+        height: height,
+      );
+
+  factory RuiButtonStyle.text({
+    final TextStyle? textStyle,
+    final EdgeInsets? padding,
+    final BorderRadius? borderRadius,
+    final double? width,
+    final double? height,
+  }) =>
+      RuiButtonStyle(
+        color: (final BuildContext context, final RuiInteractiveState state) {
+          final RuiColorScheme colorScheme = RuiTheme.colorSchemeOf(context);
+          if (state == RuiInteractiveState.active) {
+            return colorScheme.backgroundVariant.withOpacity(0.5);
+          }
+          return RuiColors.transparent;
+        },
+        strokeColor: (final _, final __) => RuiColors.transparent,
+        textStyle:
+            (final BuildContext context, final RuiInteractiveState state) {
+          final RuiTheme theme = RuiTheme.of(context);
+          final RuiColorScheme colorScheme = theme.colorScheme;
+          final TextStyle nTextStyle =
+              textStyle ?? DefaultTextStyle.of(context).style;
+          final Color? color = switch (state) {
+            RuiInteractiveState.normal => null,
+            RuiInteractiveState.active ||
+            RuiInteractiveState.hovered =>
+              colorScheme.primary,
+            RuiInteractiveState.disabled => colorScheme.disabled,
+          };
+          return nTextStyle.copyWith(color: color);
+        },
+        padding: padding ?? defaultPadding,
+        borderRadius: borderRadius ?? defaultBorderRadius,
+        width: width,
+        height: height,
+      );
+
   final RuiInteractiveStateCallback<Color> color;
+  final RuiInteractiveStateCallback<Color>? strokeColor;
   final RuiInteractiveStateCallback<TextStyle> textStyle;
   final EdgeInsets padding;
   final BorderRadius borderRadius;
   final double? height;
   final double? width;
 
-  static final BorderRadius defaultBorderRadius = BorderRadius.circular(8);
+  static const BorderRadius defaultBorderRadius =
+      BorderRadius.all(Radius.circular(8));
+
   static const EdgeInsets defaultPadding =
       EdgeInsets.symmetric(horizontal: 12, vertical: 8);
 }
@@ -87,11 +169,13 @@ class RuiButton extends StatefulWidget {
     required this.child,
     required this.onClick,
     this.enabled = true,
+    this.active = false,
     super.key,
   });
 
   final RuiButtonStyle style;
   final bool enabled;
+  final bool active;
   final Widget child;
   final VoidCallback onClick;
 
@@ -105,6 +189,7 @@ class _RuiButtonState extends State<RuiButton> {
 
   RuiInteractiveState toInteractiveState() {
     if (!widget.enabled) return RuiInteractiveState.disabled;
+    if (widget.active) return RuiInteractiveState.active;
     if (isFocused) return RuiInteractiveState.active;
     if (isHovered) return RuiInteractiveState.hovered;
     return RuiInteractiveState.normal;
@@ -121,7 +206,7 @@ class _RuiButtonState extends State<RuiButton> {
         });
       },
       child: GestureDetector(
-        onTap: widget.onClick,
+        onTap: widget.enabled ? widget.onClick : null,
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
           onEnter: (final _) => updateHovered(true),
@@ -135,9 +220,9 @@ class _RuiButtonState extends State<RuiButton> {
             decoration: BoxDecoration(
               color: widget.style.color(context, state),
               borderRadius: widget.style.borderRadius,
-              // border: widget.style.strokeColor != null
-              //     ? Border.all(color: widget.style.strokeColor!(context, state))
-              //     : null,
+              border: widget.style.strokeColor != null
+                  ? Border.all(color: widget.style.strokeColor!(context, state))
+                  : null,
             ),
             child: AnimatedDefaultTextStyle(
               duration: RuiAnimationDurations.quickest,

@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import '../theme/animation_durations.dart';
+import '../theme/color_scheme.dart';
+import '../theme/states.dart';
 import '../theme/theme.dart';
 import 'interactive.dart';
 
@@ -9,7 +11,7 @@ class RuiTextFieldStyle {
     required this.color,
     required this.cursorColor,
     required this.inactiveCursorColor,
-    required this.selectedColor,
+    required this.selectionColor,
     required this.padding,
     required this.borderRadius,
     this.strokeColor,
@@ -17,8 +19,9 @@ class RuiTextFieldStyle {
     this.width,
   });
 
-  factory RuiTextFieldStyle.standard(
+  factory RuiTextFieldStyle.outlined(
     final BuildContext context, {
+    final TextStyle? textStyle,
     final EdgeInsets? padding,
     final BorderRadius? borderRadius,
     final double? height,
@@ -26,14 +29,10 @@ class RuiTextFieldStyle {
   }) {
     final RuiTheme theme = RuiTheme.of(context);
     return RuiTextFieldStyle(
-      textStyle: DefaultTextStyle.of(context).style,
       color: (final BuildContext context, final RuiInteractiveState state) =>
-          switch (state) {
-        RuiInteractiveState.active ||
-        RuiInteractiveState.hovered =>
-          theme.colorScheme.backgroundVariant,
-        _ => theme.colorScheme.background,
-      },
+          RuiTheme.of(context)
+              .colorScheme
+              .backgroundWhenState(state.toThemeState()),
       strokeColor:
           (final BuildContext context, final RuiInteractiveState state) =>
               switch (state) {
@@ -42,9 +41,18 @@ class RuiTextFieldStyle {
           theme.colorScheme.surface,
         _ => theme.colorScheme.backgroundVariant,
       },
+      textStyle: (final BuildContext context, final RuiInteractiveState state) {
+        final RuiTheme theme = RuiTheme.of(context);
+        final RuiColorScheme colorScheme = theme.colorScheme;
+        final TextStyle nTextStyle =
+            textStyle ?? DefaultTextStyle.of(context).style;
+        final Color color =
+            colorScheme.onBackgroundWhenState(state.toThemeState());
+        return nTextStyle.copyWith(color: color);
+      },
       cursorColor: theme.colorScheme.primary,
       inactiveCursorColor: theme.colorScheme.dimmed,
-      selectedColor: theme.colorScheme.surface,
+      selectionColor: theme.colorScheme.surface,
       padding: padding ?? defaultPadding,
       borderRadius: borderRadius ?? defaultBorderRadius,
       height: height,
@@ -52,12 +60,12 @@ class RuiTextFieldStyle {
     );
   }
 
-  final TextStyle textStyle;
+  final RuiInteractiveStateCallback<TextStyle> textStyle;
   final RuiInteractiveStateCallback<Color> color;
   final RuiInteractiveStateCallback<Color>? strokeColor;
   final Color cursorColor;
   final Color inactiveCursorColor;
-  final Color selectedColor;
+  final Color selectionColor;
   final EdgeInsets padding;
   final BorderRadius borderRadius;
   final double? height;
@@ -126,28 +134,39 @@ class _RuiTextFieldState extends State<RuiTextField> {
       onEnter: (final _) => updateHovered(true),
       onExit: (final _) => updateHovered(false),
       cursor: SystemMouseCursors.text,
-      child: AnimatedContainer(
-        duration: RuiAnimationDurations.fast,
-        width: widget.style.width,
-        height: widget.style.height,
-        padding: widget.style.padding,
-        decoration: BoxDecoration(
-          color: widget.style.color(context, state),
-          borderRadius: widget.style.borderRadius,
-          border: widget.style.strokeColor != null
-              ? Border.all(color: widget.style.strokeColor!(context, state))
-              : null,
-        ),
-        child: EditableText(
-          controller: widget.controller,
-          focusNode: focusNode,
-          style: widget.style.textStyle,
-          cursorColor: widget.style.cursorColor,
-          backgroundCursorColor: widget.style.inactiveCursorColor,
-          selectionColor: widget.style.selectedColor,
-          keyboardType: widget.type,
-          onChanged: (final String value) => widget.onChanged(value),
-          onSubmitted: (final String value) => widget.onFinished(value),
+      child: GestureDetector(
+        onTap: widget.enabled ? focusNode.requestFocus : null,
+        child: AnimatedContainer(
+          duration: RuiAnimationDurations.fast,
+          width: widget.style.width,
+          height: widget.style.height,
+          padding: widget.style.padding,
+          decoration: BoxDecoration(
+            color: widget.style.color(context, state),
+            borderRadius: widget.style.borderRadius,
+            border: widget.style.strokeColor != null
+                ? Border.all(color: widget.style.strokeColor!(context, state))
+                : null,
+          ),
+          child: AnimatedDefaultTextStyle(
+            duration: RuiAnimationDurations.fast,
+            style: widget.style.textStyle(context, state),
+            child: switch (widget.enabled) {
+              true => EditableText(
+                  controller: widget.controller,
+                  focusNode: focusNode,
+                  style: DefaultTextStyle.of(context).style,
+                  cursorWidth: 1,
+                  cursorColor: widget.style.cursorColor,
+                  backgroundCursorColor: widget.style.inactiveCursorColor,
+                  selectionColor: widget.style.selectionColor,
+                  keyboardType: widget.type,
+                  onChanged: (final String value) => widget.onChanged(value),
+                  onSubmitted: (final String value) => widget.onFinished(value),
+                ),
+              false => Text(widget.controller.text),
+            },
+          ),
         ),
       ),
     );

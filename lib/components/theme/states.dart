@@ -11,29 +11,37 @@ enum RuiThemeState {
 extension RuiThemeStateUtils on RuiColorScheme {
   Color primaryWhenState(final RuiThemeState state) => switch (state) {
         RuiThemeState.normal => primary,
-        RuiThemeState.hovered => primaryVariant,
-        RuiThemeState.active => primaryVariant,
+        RuiThemeState.hovered || RuiThemeState.active => primaryVariant,
         RuiThemeState.disabled => disabled,
       };
 
   Color onPrimaryWhenState(final RuiThemeState state) => switch (state) {
         RuiThemeState.normal => onPrimary,
-        RuiThemeState.hovered => onPrimaryVariant,
-        RuiThemeState.active => onPrimaryVariant,
+        RuiThemeState.hovered || RuiThemeState.active => onPrimaryVariant,
+        RuiThemeState.disabled => onDisabled,
+      };
+
+  Color backgroundWhenState(final RuiThemeState state) => switch (state) {
+        RuiThemeState.normal => background,
+        RuiThemeState.hovered || RuiThemeState.active => backgroundVariant,
+        RuiThemeState.disabled => disabled,
+      };
+
+  Color onBackgroundWhenState(final RuiThemeState state) => switch (state) {
+        RuiThemeState.normal => onBackground,
+        RuiThemeState.hovered || RuiThemeState.active => onBackgroundVariant,
         RuiThemeState.disabled => onDisabled,
       };
 
   Color surfaceWhenState(final RuiThemeState state) => switch (state) {
         RuiThemeState.normal => surface,
-        RuiThemeState.hovered => surfaceVariant,
-        RuiThemeState.active => surfaceVariant,
+        RuiThemeState.hovered || RuiThemeState.active => surfaceVariant,
         RuiThemeState.disabled => disabled,
       };
 
   Color onSurfaceWhenState(final RuiThemeState state) => switch (state) {
         RuiThemeState.normal => onSurface,
-        RuiThemeState.hovered => onSurfaceVariant,
-        RuiThemeState.active => onSurfaceVariant,
+        RuiThemeState.hovered || RuiThemeState.active => onSurfaceVariant,
         RuiThemeState.disabled => onDisabled,
       };
 }

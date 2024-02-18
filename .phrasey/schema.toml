@@ -17,3 +17,11 @@ description = "Choose a below option when you are ready."
 [[keys]]
 name = "Back"
 description = "Back"
+
+[[keys]]
+name = "Username"
+description = "Username"
+
+[[keys]]
+name = "Theme"
+description = "Theme"
