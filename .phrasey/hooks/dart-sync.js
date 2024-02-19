@@ -9,7 +9,7 @@ const appTranslationsDir = p.join(rootDir, "lib/services/translations");
  */
 const hook = {
     onTranslationsBuildFinished: async ({ phrasey, state, log }) => {
-        if (phrasey.options.source !== "build") {
+        if (!["build", "watch"].includes(phrasey.options.source)) {
             log.info("Skipping post-build due to non-build source");
             return;
         }
@@ -32,6 +32,8 @@ async function createTranslationsDart(phrasey, state, log) {
         a.locale.display.localeCompare(b.locale.display)
     );
     const content = `
+// ignore_for_file: eol_at_end_of_file
+
 part of 'translations.dart';
 
 abstract class RuiTranslations {
@@ -95,6 +97,8 @@ async function createTranslationDart(phrasey, state, log) {
     }
 
     const content = `
+// ignore_for_file: eol_at_end_of_file
+
 part of 'translation.dart';
 
 class RuiTranslation {
@@ -118,12 +122,4 @@ ${dynamicKeys.join("\n")}
     const path = p.join(appTranslationsDir, "translation_part.dart");
     await fs.writeFile(path, content);
     log.success(`Generated "${p.relative(rootDir, path)}".`);
-}
-
-/**
- * @param {string} value
- * @returns {string}
- */
-function camel(value) {
-    return `${value[0].toLowerCase()}${value.slice(1)}`;
 }

@@ -2,12 +2,14 @@ import 'package:flutter/widgets.dart';
 
 class RuiTextTheme {
   const RuiTextTheme({
+    required this.display,
     required this.headline,
     required this.title,
     required this.body,
     required this.small,
   });
 
+  final TextStyle display;
   final TextStyle headline;
   final TextStyle title;
   final TextStyle body;
@@ -16,6 +18,11 @@ class RuiTextTheme {
   static const String fontFamily = 'Inter';
 
   static const RuiTextTheme standard = RuiTextTheme(
+    display: TextStyle(
+      fontFamily: fontFamily,
+      fontSize: 32,
+      fontWeight: FontWeight.bold,
+    ),
     headline: TextStyle(
       fontFamily: fontFamily,
       fontSize: 24,

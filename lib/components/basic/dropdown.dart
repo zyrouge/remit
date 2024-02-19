@@ -67,11 +67,11 @@ class _RuiDropdownState<T> extends State<RuiDropdown<T>>
                 CompositedTransformFollower(
                   link: layerLink,
                   targetAnchor: Alignment.bottomLeft,
-                  offset: const Offset(0, 2),
+                  offset: const Offset(0, 4),
                   child: Align(
                     alignment: AlignmentDirectional.topStart,
                     child: FadeScaleTransition2(
-                      alignment: Alignment.topLeft,
+                      alignment: Alignment.topCenter,
                       animation: animationController,
                       child: ConstrainedBox(
                         constraints:

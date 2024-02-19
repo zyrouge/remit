@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import '../theme/animation_durations.dart';
 import '../theme/color_scheme.dart';
-import '../theme/colors.dart';
 import '../theme/states.dart';
 import '../theme/theme.dart';
 import 'interactive.dart';
@@ -135,61 +134,67 @@ class _RuiTextFieldState extends State<RuiTextField> {
   @override
   Widget build(final BuildContext context) {
     final RuiInteractiveState state = toInteractiveState();
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        MouseRegion(
-          onEnter: (final _) => updateHovered(true),
-          onExit: (final _) => updateHovered(false),
-          cursor: SystemMouseCursors.text,
-          child: GestureDetector(
-            onTap: widget.enabled ? focusNode.requestFocus : null,
-            child: AnimatedContainer(
-              duration: RuiAnimationDurations.fast,
-              width: widget.style.width,
-              height: widget.style.height,
-              padding: widget.style.padding,
-              decoration: BoxDecoration(
-                color: widget.style.color(context, state),
-                borderRadius: widget.style.borderRadius,
-                border: widget.style.strokeColor != null
-                    ? Border.all(
-                        color: widget.style.strokeColor!(context, state))
-                    : null,
-              ),
-              child: AnimatedDefaultTextStyle(
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          MouseRegion(
+            onEnter: (final _) => updateHovered(true),
+            onExit: (final _) => updateHovered(false),
+            cursor: SystemMouseCursors.text,
+            child: GestureDetector(
+              onTap: widget.enabled ? focusNode.requestFocus : null,
+              child: AnimatedContainer(
                 duration: RuiAnimationDurations.fast,
-                style: widget.style.textStyle(context, state),
-                child: switch (widget.enabled) {
-                  true => EditableText(
-                      controller: widget.controller,
-                      focusNode: focusNode,
-                      style: DefaultTextStyle.of(context).style,
-                      cursorWidth: 1,
-                      cursorColor: widget.style.cursorColor,
-                      backgroundCursorColor: widget.style.inactiveCursorColor,
-                      selectionColor: widget.style.selectionColor,
-                      keyboardType: widget.type,
-                      onChanged: updateTextChanged,
-                      onSubmitted: widget.onFinished,
-                    ),
-                  false => Text(widget.controller.text),
-                },
+                width: widget.style.width,
+                height: widget.style.height,
+                padding: widget.style.padding,
+                decoration: BoxDecoration(
+                  color: widget.style.color(context, state),
+                  borderRadius: widget.style.borderRadius,
+                  border: widget.style.strokeColor != null
+                      ? Border.all(
+                          color: widget.style.strokeColor!(context, state),
+                        )
+                      : null,
+                ),
+                child: AnimatedDefaultTextStyle(
+                  duration: RuiAnimationDurations.fast,
+                  style: widget.style.textStyle(context, state),
+                  child: switch (widget.enabled) {
+                    true => EditableText(
+                        controller: widget.controller,
+                        focusNode: focusNode,
+                        style: DefaultTextStyle.of(context).style,
+                        cursorWidth: 1,
+                        cursorColor: widget.style.cursorColor,
+                        backgroundCursorColor: widget.style.inactiveCursorColor,
+                        selectionColor: widget.style.selectionColor,
+                        keyboardType: widget.type,
+                        showSelectionHandles: true,
+                        selectionControls: _RuiTextSelectionControls(),
+                        onChanged: updateTextChanged,
+                        onSubmitted: widget.onFinished,
+                        onTapOutside: (final _) => focusNode.unfocus(),
+                      ),
+                    false => Text(widget.controller.text),
+                  },
+                ),
               ),
             ),
           ),
-        ),
-        if (errorLabel != null) ...<Widget>[
-          RuiSpacer.verticalTight,
-          Text(
-            errorLabel!,
-            style: RuiTheme.textThemeOf(context)
-                .small
-                .copyWith(color: RuiTheme.colorSchemeOf(context).error),
-          ),
+          if (errorLabel != null) ...<Widget>[
+            RuiSpacer.verticalTight,
+            Text(
+              errorLabel!,
+              style: RuiTheme.textThemeOf(context)
+                  .small
+                  .copyWith(color: RuiTheme.colorSchemeOf(context).error),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 
@@ -206,4 +211,48 @@ class _RuiTextFieldState extends State<RuiTextField> {
       errorLabel = widget.validate!(value);
     });
   }
+}
+
+class _RuiTextSelectionControls extends TextSelectionControls
+    with TextSelectionHandleControls {
+  @override
+  Size getHandleSize(final double textLineHeight) =>
+      const Size(handleSize, handleSize);
+
+  @override
+  Offset getHandleAnchor(
+    final TextSelectionHandleType type,
+    final double textLineHeight,
+  ) =>
+      switch (type) {
+        TextSelectionHandleType.left => const Offset(handleSize / 2, 0),
+        TextSelectionHandleType.right => const Offset(handleSize / 2, 0),
+        // requires 0.75px for some weird reason
+        TextSelectionHandleType.collapsed =>
+          const Offset((handleSize / 2) - 0.75, 0),
+      };
+
+  @override
+  Widget buildHandle(
+    final BuildContext context,
+    final TextSelectionHandleType type,
+    final double textHeight, [
+    final VoidCallback? onTap,
+  ]) {
+    final RuiColorScheme colorScheme = RuiTheme.colorSchemeOf(context);
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.translucent,
+      child: Container(
+        width: handleSize,
+        height: handleSize,
+        decoration: BoxDecoration(
+          color: colorScheme.primary,
+          shape: BoxShape.circle,
+        ),
+      ),
+    );
+  }
+
+  static const double handleSize = 8;
 }

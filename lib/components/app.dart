@@ -26,8 +26,11 @@ class RuiApp extends StatefulWidget {
 
   static const String home = '/';
   static const String settings = '/settings';
+  static const String send = '/send';
+  static const String receive = '/receive';
 
-  static Brightness get systemThemeMode => SchedulerBinding.instance.platformDispatcher.platformBrightness;
+  static Brightness get systemThemeMode =>
+      SchedulerBinding.instance.platformDispatcher.platformBrightness;
 }
 
 class _RuiAppState extends State<RuiApp> {
@@ -100,10 +103,10 @@ class _RuiAppState extends State<RuiApp> {
     settings = nSettings;
     theme = RuiThemeData(
       colorScheme: switch (nSettings.themeMode) {
-        RuiThemeMode.system =>
-          RuiApp.systemThemeMode == Brightness.light
-              ? RuiColorScheme.light
-              : RuiColorScheme.dark,
+        RuiThemeMode.system => switch (RuiApp.systemThemeMode) {
+            Brightness.light => RuiColorScheme.light,
+            Brightness.dark => RuiColorScheme.dark,
+          },
         RuiThemeMode.light => RuiColorScheme.light,
         RuiThemeMode.dark => RuiColorScheme.dark,
       },

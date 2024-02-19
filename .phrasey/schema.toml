@@ -37,3 +37,7 @@ description = "Light"
 [[keys]]
 name = "Dark"
 description = "Dark"
+
+[[keys]]
+name = "UsernameTooShort"
+description = "Username too short"

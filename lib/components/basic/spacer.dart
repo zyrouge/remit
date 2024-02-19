@@ -27,6 +27,7 @@ class RuiSpacer extends StatelessWidget {
   static const RuiSpacer horizontalTight = RuiSpacer.horizontal(tightPx);
   static const RuiSpacer horizontalNormal = RuiSpacer.horizontal(normalPx);
   static const RuiSpacer horizontalRelaxed = RuiSpacer.horizontal(relaxedPx);
+  static const RuiSpacer horizontalCozy = RuiSpacer.horizontal(cozyPx);
 
   static const RuiSpacer verticalTight = RuiSpacer.vertical(tightPx);
   static const RuiSpacer verticalNormal = RuiSpacer.vertical(normalPx);

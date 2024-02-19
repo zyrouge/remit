@@ -4,9 +4,10 @@
     "version": "0.0.0",
     "description": "",
     "scripts": {
-        "build:i18n": "phrasey build -p ./.phrasey/config.toml -f toml",
-        "build:gen": "dart run build_runner build",
-        "dev": "npm run build:i18n && npm run build:gen && flutter run"
+        "i18n:watch": "phrasey watch -p ./.phrasey/config.toml -f toml",
+        "i18n:build": "phrasey build -p ./.phrasey/config.toml -f toml",
+        "build_runner": "dart run build_runner build",
+        "dev": "npm run i18n:build && npm run build_runner && flutter run"
     },
     "repository": "https://github.com/zyrouge/remit.git",
     "author": "Zyrouge",

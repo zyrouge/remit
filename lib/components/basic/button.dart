@@ -207,6 +207,11 @@ class _RuiButtonState extends State<RuiButton> {
       },
       child: GestureDetector(
         onTap: widget.enabled ? widget.onClick : null,
+        onTapUp: (final _) => updateHovered(false),
+        onTapDown: (final _) => updateHovered(true),
+        onTapCancel: () => updateHovered(false),
+        onLongPressStart: (final _) => updateHovered(true),
+        onLongPressEnd: (final _) => updateHovered(false),
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
           onEnter: (final _) => updateHovered(true),
