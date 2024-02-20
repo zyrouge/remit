@@ -4,6 +4,9 @@ class RuiVerticalContent extends StatelessWidget {
   const RuiVerticalContent({
     required this.child,
     this.spacing = defaultSpacing,
+    this.mainAxisAlignment = MainAxisAlignment.center,
+    this.mainAxisSize = MainAxisSize.min,
+    this.crossAxisAlignment = CrossAxisAlignment.center,
     this.leading,
     this.trailing,
     super.key,
@@ -13,11 +16,15 @@ class RuiVerticalContent extends StatelessWidget {
   final Widget child;
   final Widget? trailing;
   final double spacing;
+  final MainAxisAlignment mainAxisAlignment;
+  final MainAxisSize mainAxisSize;
+  final CrossAxisAlignment crossAxisAlignment;
 
   @override
   Widget build(final BuildContext context) => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: mainAxisAlignment,
+        mainAxisSize: mainAxisSize,
+        crossAxisAlignment: crossAxisAlignment,
         children: <Widget>[
           if (leading != null) ...<Widget>[
             leading!,

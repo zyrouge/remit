@@ -5,7 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../pages/home.dart';
-import '../pages/settings.dart';
+import '../pages/settings/settings.dart';
 import '../services/settings/settings.dart';
 import '../services/translations/translation.dart';
 import '../services/translations/translations.dart';

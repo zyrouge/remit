@@ -10,6 +10,6 @@ abstract class RuiPaths {
     if (!(await supportDirectory.exists())) {
       supportDirectory.create(recursive: true);
     }
-    Log.info('Paths', 'initialized all paths');
+    log.info('Paths', 'initialized all paths');
   }
 }

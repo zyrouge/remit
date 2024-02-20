@@ -41,3 +41,19 @@ description = "Dark"
 [[keys]]
 name = "UsernameTooShort"
 description = "Username too short"
+
+[[keys]]
+name = "Language"
+description = "Language"
+
+[[keys]]
+name = "Ask"
+description = "Ask"
+
+[[keys]]
+name = "AllowAll"
+description = "Allow all"
+
+[[keys]]
+name = "ConnectionAcceptMode"
+description = "Connection accept mode"

@@ -38,7 +38,7 @@ class _RuiHomePageState extends State<RuiHomePage> {
               style: RuiTheme.of(context).textTheme.headline,
             ),
           ),
-          RuiSpacer.verticalTight,
+          RuiSpacer.verticalCompact,
           Text(
             context.t.chooseABelowOptionWhenYouAreReady,
             style: DefaultTextStyle.of(context)
@@ -54,7 +54,7 @@ class _RuiHomePageState extends State<RuiHomePage> {
             ),
             onClick: () {},
           ),
-          RuiSpacer.verticalTight,
+          RuiSpacer.verticalCompact,
           RuiButton(
             style: RuiButtonStyle.primary(width: buttonWidth),
             child: RuiVerticalContent(
@@ -63,7 +63,7 @@ class _RuiHomePageState extends State<RuiHomePage> {
             ),
             onClick: () {},
           ),
-          RuiSpacer.verticalTight,
+          RuiSpacer.verticalCompact,
           RuiButton(
             style: RuiButtonStyle.surface(width: buttonWidth),
             child: RuiVerticalContent(

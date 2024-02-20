@@ -24,7 +24,7 @@ extension RuiThemeStateUtils on RuiColorScheme {
   Color backgroundWhenState(final RuiThemeState state) => switch (state) {
         RuiThemeState.normal => background,
         RuiThemeState.hovered || RuiThemeState.active => backgroundVariant,
-        RuiThemeState.disabled => disabled,
+        RuiThemeState.disabled => background,
       };
 
   Color onBackgroundWhenState(final RuiThemeState state) => switch (state) {

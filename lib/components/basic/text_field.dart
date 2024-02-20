@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 import '../theme/animation_durations.dart';
 import '../theme/color_scheme.dart';
@@ -172,7 +174,8 @@ class _RuiTextFieldState extends State<RuiTextField> {
                         backgroundCursorColor: widget.style.inactiveCursorColor,
                         selectionColor: widget.style.selectionColor,
                         keyboardType: widget.type,
-                        showSelectionHandles: true,
+                        showSelectionHandles:
+                            Platform.isAndroid || Platform.isIOS,
                         selectionControls: _RuiTextSelectionControls(),
                         onChanged: updateTextChanged,
                         onSubmitted: widget.onFinished,
@@ -185,7 +188,7 @@ class _RuiTextFieldState extends State<RuiTextField> {
             ),
           ),
           if (errorLabel != null) ...<Widget>[
-            RuiSpacer.verticalTight,
+            RuiSpacer.verticalCompact,
             Text(
               errorLabel!,
               style: RuiTheme.textThemeOf(context)
@@ -227,7 +230,7 @@ class _RuiTextSelectionControls extends TextSelectionControls
       switch (type) {
         TextSelectionHandleType.left => const Offset(handleSize / 2, 0),
         TextSelectionHandleType.right => const Offset(handleSize / 2, 0),
-        // requires 0.75px for some weird reason
+        // requires - 0.75px for some weird reason
         TextSelectionHandleType.collapsed =>
           const Offset((handleSize / 2) - 0.75, 0),
       };

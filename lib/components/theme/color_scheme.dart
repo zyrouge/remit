@@ -78,7 +78,7 @@ class RuiColorScheme {
     onSurface: RuiColors.white,
     surfaceVariant: RuiColors.dark700,
     onSurfaceVariant: RuiColors.white,
-    disabled: RuiColors.dark500,
+    disabled: RuiColors.dark800,
     onDisabled: RuiColors.dark300,
     dimmed: RuiColors.dark200,
     error: RuiColors.red500,
