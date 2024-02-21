@@ -95,6 +95,7 @@ class _RuiDropdownState<T> extends State<RuiDropdown<T>>
             child: RuiButton(
               active: isOpen,
               style: widget.style,
+              enabled: widget.enabled,
               onClick: togglePopup,
               child: Row(
                 children: <Widget>[

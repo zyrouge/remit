@@ -52,7 +52,7 @@ class _RuiHomePageState extends State<RuiHomePage> {
               leading: const RuiIcon(Ionicons.share_outline),
               child: Text(context.t.send),
             ),
-            onClick: () {},
+            onClick: () => Navigator.of(context).pushNamed(RuiApp.sendStart),
           ),
           RuiSpacer.verticalCompact,
           RuiButton(

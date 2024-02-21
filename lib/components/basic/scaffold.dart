@@ -8,13 +8,31 @@ class RuiScaffold extends StatelessWidget {
     this.padding = defaultPadding,
     this.maxWidth,
     this.includeDevicePadding = true,
+    this.scrollableBody = false,
     super.key,
   });
 
   final EdgeInsets padding;
   final double? maxWidth;
   final bool includeDevicePadding;
+  final bool scrollableBody;
   final Widget body;
+
+  Widget buildBody(final BuildContext context) {
+    Widget child = Padding(padding: padding, child: body);
+    if (scrollableBody) {
+      child = SingleChildScrollView(child: child);
+    }
+    return Container(
+      width: maxWidth != null
+          ? min(maxWidth!, MediaQuery.sizeOf(context).width)
+          : double.infinity,
+      height: double.infinity,
+      color: RuiTheme.of(context).colorScheme.background,
+      padding: MediaQuery.paddingOf(context).add(padding),
+      child: child,
+    );
+  }
 
   @override
   Widget build(final BuildContext context) {
@@ -31,15 +49,7 @@ class RuiScaffold extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          Container(
-            width: maxWidth != null
-                ? min(maxWidth!, MediaQuery.sizeOf(context).width)
-                : double.infinity,
-            height: double.infinity,
-            color: RuiTheme.of(context).colorScheme.background,
-            padding: MediaQuery.paddingOf(context).add(padding),
-            child: body,
-          ),
+          buildBody(context),
         ],
       ),
     );

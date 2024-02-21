@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import '../theme/animation_durations.dart';
 import '../theme/color_scheme.dart';
@@ -88,6 +89,7 @@ class RuiTextField extends StatefulWidget {
     this.type = TextInputType.text,
     this.enabled = true,
     this.validate,
+    this.inputFormatters,
     super.key,
   });
 
@@ -96,6 +98,7 @@ class RuiTextField extends StatefulWidget {
   final TextInputType type;
   final bool enabled;
   final String? Function(String)? validate;
+  final List<TextInputFormatter>? inputFormatters;
   final void Function(String) onChanged;
   final void Function(String) onFinished;
 
@@ -169,6 +172,7 @@ class _RuiTextFieldState extends State<RuiTextField> {
                         controller: widget.controller,
                         focusNode: focusNode,
                         style: DefaultTextStyle.of(context).style,
+                        inputFormatters: widget.inputFormatters,
                         cursorWidth: 1,
                         cursorColor: widget.style.cursorColor,
                         backgroundCursorColor: widget.style.inactiveCursorColor,

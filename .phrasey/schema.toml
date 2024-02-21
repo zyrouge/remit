@@ -57,3 +57,27 @@ description = "Allow all"
 [[keys]]
 name = "ConnectionAcceptMode"
 description = "Connection accept mode"
+
+[[keys]]
+name = "Sender"
+description = "Sender"
+
+[[keys]]
+name = "BeforeYouStartEnsureTheConfiguration"
+description = "Before you start, ensure the configuration."
+
+[[keys]]
+name = "Start"
+description = "Start"
+
+[[keys]]
+name = "NetworkHost"
+description = "Network host"
+
+[[keys]]
+name = "NetworkPort"
+description = "Network port"
+
+[[keys]]
+name = "InvalidPortValue"
+description = "Invalid port value"

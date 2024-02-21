@@ -1,6 +1,24 @@
 sealed class RuiAsyncResult<T, E extends Object> {
   const RuiAsyncResult();
 
+  bool isState<S extends RuiAsyncResult<T, E>>() => this is S;
+
+  S? asStateOrNull<S extends RuiAsyncResult<T, E>>() {
+    final RuiAsyncResult<T, E> value = this;
+    if (value is! S) return null;
+    return value;
+  }
+
+  bool get isWaiting => isState<RuiAsyncWaiting<T, E>>();
+  bool get isProcessing => isState<RuiAsyncProcessing<T, E>>();
+  bool get isSuccess => isState<RuiAsyncSuccess<T, E>>();
+  bool get isFailed => isState<RuiAsyncFailed<T, E>>();
+
+  RuiAsyncWaiting<T, E>? get asWaitingOrNull => asStateOrNull();
+  RuiAsyncProcessing<T, E>? get asProcessingOrNull => asStateOrNull();
+  RuiAsyncSuccess<T, E>? get asSuccessOrNull => asStateOrNull();
+  RuiAsyncFailed<T, E>? get asFailedOrNull => asStateOrNull();
+
   static RuiAsyncWaiting<T, E> waiting<T, E extends Object>() =>
       RuiAsyncWaiting<T, E>();
 

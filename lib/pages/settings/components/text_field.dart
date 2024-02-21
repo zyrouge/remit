@@ -7,12 +7,12 @@ import '../../../components/basic/text_field.dart';
 
 class RuiSettingsTextField extends StatefulWidget {
   const RuiSettingsTextField({
-    required this.value,
+    required this.initialValue,
     required this.onChanged,
     this.validate,
   });
 
-  final String value;
+  final String initialValue;
   final String? Function(String)? validate;
   final void Function(String) onChanged;
 
@@ -27,7 +27,7 @@ class __RuiStateSettingsTextField extends State<RuiSettingsTextField> {
   @override
   void initState() {
     super.initState();
-    controller = TextEditingController(text: widget.value);
+    controller = TextEditingController(text: widget.initialValue);
   }
 
   @override
@@ -68,7 +68,7 @@ class __RuiStateSettingsTextField extends State<RuiSettingsTextField> {
 
   void onChanged() {
     setState(() {
-      hasChanged = isValid && value != widget.value;
+      hasChanged = isValid && value != widget.initialValue;
     });
   }
 
@@ -82,7 +82,7 @@ class __RuiStateSettingsTextField extends State<RuiSettingsTextField> {
   }
 
   void reset() {
-    controller.text = widget.value;
+    controller.text = widget.initialValue;
     onChanged();
   }
 

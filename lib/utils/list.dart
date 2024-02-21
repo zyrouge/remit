@@ -10,5 +10,11 @@ extension RuiListUtils<T> on List<T> {
   Map<T, V> associateWith<V>(final V Function(T) valueTransform) =>
       <T, V>{for (final T x in this) x: valueTransform(x)};
 
+  Map<K, V> associateByWith<K, V>(
+    final K Function(T) keySelector,
+    final V Function(T) valueTransform,
+  ) =>
+      <K, V>{for (final T x in this) keySelector(x): valueTransform(x)};
+
   T random() => this[ruiRandom.nextInt(length)];
 }
