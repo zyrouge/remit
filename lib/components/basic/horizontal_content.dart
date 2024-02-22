@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-class RuiVerticalContent extends StatelessWidget {
-  const RuiVerticalContent({
+import 'spacer.dart';
+
+class RuiHorizontalContent extends StatelessWidget {
+  const RuiHorizontalContent({
     required this.child,
     this.spacing = defaultSpacing,
     this.mainAxisAlignment = MainAxisAlignment.center,
@@ -38,5 +40,5 @@ class RuiVerticalContent extends StatelessWidget {
         ],
       );
 
-  static const double defaultSpacing = 8;
+  static const double defaultSpacing = RuiSpacer.compactPx;
 }

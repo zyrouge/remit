@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import '../pages/home.dart';
+import '../pages/send/send.dart';
 import '../pages/send/start.dart';
 import '../pages/settings/settings.dart';
 import '../services/settings/settings.dart';
@@ -28,6 +29,7 @@ class RuiApp extends StatefulWidget {
   static const String home = '/';
   static const String settings = '/settings';
   static const String sendStart = '/send/start';
+  static const String send = '/send';
   static const String receive = '/receive';
 
   static Brightness get systemThemeMode =>
@@ -75,6 +77,10 @@ class _RuiAppState extends State<RuiApp> {
                 RuiApp.home: (final _) => const RuiHomePage(),
                 RuiApp.settings: (final _) => const RuiSettingsPage(),
                 RuiApp.sendStart: (final _) => const RuiSendStartPage(),
+                RuiApp.send: (final BuildContext context) => RuiSendPage(
+                      options: ModalRoute.of(context)!.settings.arguments!
+                          as RuiSendPageOptions,
+                    ),
               },
               pageRouteBuilder: <T>(
                 final RouteSettings settings,

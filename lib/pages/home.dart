@@ -3,11 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:ionicons/ionicons.dart';
 import '../components/app.dart';
 import '../components/basic/button.dart';
+import '../components/basic/horizontal_content.dart';
 import '../components/basic/icon.dart';
 import '../components/basic/logo.dart';
 import '../components/basic/scaffold.dart';
 import '../components/basic/spacer.dart';
-import '../components/basic/vertical_content.dart';
 import '../components/localized.dart';
 import '../components/theme/responsivity.dart';
 import '../components/theme/theme.dart';
@@ -31,7 +31,7 @@ class _RuiHomePageState extends State<RuiHomePage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          RuiVerticalContent(
+          RuiHorizontalContent(
             leading: const RuiLogo(size: 32),
             child: Text(
               RuiMeta.appName,
@@ -48,7 +48,7 @@ class _RuiHomePageState extends State<RuiHomePage> {
           RuiSpacer.verticalCozy,
           RuiButton(
             style: RuiButtonStyle.primary(width: buttonWidth),
-            child: RuiVerticalContent(
+            child: RuiHorizontalContent(
               leading: const RuiIcon(Ionicons.share_outline),
               child: Text(context.t.send),
             ),
@@ -57,7 +57,7 @@ class _RuiHomePageState extends State<RuiHomePage> {
           RuiSpacer.verticalCompact,
           RuiButton(
             style: RuiButtonStyle.primary(width: buttonWidth),
-            child: RuiVerticalContent(
+            child: RuiHorizontalContent(
               leading: const RuiIcon(Ionicons.download_outline),
               child: Text(context.t.receive),
             ),
@@ -66,7 +66,7 @@ class _RuiHomePageState extends State<RuiHomePage> {
           RuiSpacer.verticalCompact,
           RuiButton(
             style: RuiButtonStyle.surface(width: buttonWidth),
-            child: RuiVerticalContent(
+            child: RuiHorizontalContent(
               leading: const RuiIcon(Ionicons.settings_outline),
               child: Text(context.t.settings),
             ),

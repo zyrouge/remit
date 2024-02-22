@@ -3,9 +3,9 @@ import 'package:ionicons/ionicons.dart';
 import '../localized.dart';
 import '../theme/colors.dart';
 import 'button.dart';
+import 'horizontal_content.dart';
 import 'icon.dart';
 import 'interactive.dart';
-import 'vertical_content.dart';
 
 class RuiBackButton extends StatelessWidget {
   const RuiBackButton({
@@ -32,7 +32,7 @@ class RuiBackButton extends StatelessWidget {
             },
           ),
           onClick: onClick,
-          child: RuiVerticalContent(
+          child: RuiHorizontalContent(
             leading: const RuiIcon(Ionicons.arrow_back_outline),
             child: Text(context.t.back),
           ),

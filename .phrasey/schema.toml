@@ -81,3 +81,27 @@ description = "Network port"
 [[keys]]
 name = "InvalidPortValue"
 description = "Invalid port value"
+
+[[keys]]
+name = "Secure"
+description = "Secure"
+
+[[keys]]
+name = "Yes"
+description = "Yes"
+
+[[keys]]
+name = "No"
+description = "No"
+
+[[keys]]
+name = "DoYouReallyWantToStopSharingFiles"
+description = "Do you really want to stop sharing files?"
+
+[[keys]]
+name = "Accept"
+description = "Accept"
+
+[[keys]]
+name = "Deny"
+description = "Deny"

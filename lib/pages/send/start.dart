@@ -4,14 +4,15 @@ import 'package:flutter/widgets.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:remit/exports.dart';
+import '../../components/app.dart';
 import '../../components/basic/back_button.dart';
 import '../../components/basic/button.dart';
 import '../../components/basic/dropdown.dart';
+import '../../components/basic/horizontal_content.dart';
 import '../../components/basic/icon.dart';
 import '../../components/basic/scaffold.dart';
 import '../../components/basic/spacer.dart';
 import '../../components/basic/text_field.dart';
-import '../../components/basic/vertical_content.dart';
 import '../../components/localized.dart';
 import '../../components/theme/responsivity.dart';
 import '../../components/theme/theme.dart';
@@ -21,6 +22,7 @@ import '../../utils/extensions.dart';
 import '../../utils/list.dart';
 import '../../utils/random_names.dart';
 import '../settings/components/field.dart';
+import 'send.dart';
 
 enum RuiConnectionAcceptModes {
   ask,
@@ -69,11 +71,11 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
   }
 
   Future<void> fetchAvailableAddresses() async {
+    setState(() {
+      host = null;
+      availableAddresses = RuiAsyncResult.processing();
+    });
     try {
-      setState(() {
-        host = null;
-        availableAddresses = RuiAsyncResult.processing();
-      });
       final List<InternetAddress> value =
           await RemitServer.getAvailableNetworks();
       if (!mounted) return;
@@ -114,7 +116,7 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
           RuiSpacer.verticalCozy,
           RuiSettingsField(
             label: context.t.username,
-            child: RuiVerticalContent(
+            child: RuiHorizontalContent(
               spacing: RuiSpacer.tightPx,
               trailing: RuiButton(
                 enabled: usernameTextController.text != defaultUsername,
@@ -138,7 +140,7 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
           RuiSpacer.verticalRelaxed,
           RuiSettingsField(
             label: context.t.networkHost,
-            child: RuiVerticalContent(
+            child: RuiHorizontalContent(
               spacing: RuiSpacer.tightPx,
               trailing: RuiButton(
                 enabled: !availableAddresses.isProcessing,
@@ -179,7 +181,7 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
           RuiSpacer.verticalRelaxed,
           RuiSettingsField(
             label: context.t.networkPort,
-            child: RuiVerticalContent(
+            child: RuiHorizontalContent(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: RuiSpacer.tightPx,
               trailing: RuiButton(
@@ -225,10 +227,38 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
             ),
           ),
           RuiSpacer.verticalRelaxed,
+          RuiSettingsField(
+            label: context.t.secure,
+            child: RuiDropdown<bool>(
+              value: secure,
+              labels: <bool, String>{
+                true: context.t.yes,
+                false: context.t.no,
+              },
+              style: RuiButtonStyle.outlined(),
+              popupStyle: RuiDropdownPopupStyle.standard(context),
+              itemStyle: RuiButtonStyle.text(),
+              onChanged: (final bool value) {
+                setState(() {
+                  secure = value;
+                });
+              },
+            ),
+          ),
+          RuiSpacer.verticalRelaxed,
           RuiButton(
             style: RuiButtonStyle.primary(),
             enabled: validateAll(),
-            onClick: () {},
+            onClick: () => Navigator.of(context).pushNamed(
+              RuiApp.send,
+              arguments: RuiSendPageOptions(
+                username: usernameTextController.text,
+                host: host!,
+                port: int.parse(portTextController.text),
+                acceptMode: acceptMode,
+                secure: secure,
+              ),
+            ),
             child: Text(context.t.start),
           ),
           RuiSpacer.verticalCozy,
