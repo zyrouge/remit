@@ -95,8 +95,8 @@ name = "No"
 description = "No"
 
 [[keys]]
-name = "DoYouReallyWantToStopSharingFiles"
-description = "Do you really want to stop sharing files?"
+name = "ServerExitMessage"
+description = "This will terminate the server and all of the ongoing transfers immediately."
 
 [[keys]]
 name = "Accept"
@@ -105,3 +105,15 @@ description = "Accept"
 [[keys]]
 name = "Deny"
 description = "Deny"
+
+[[keys]]
+name = "ExitQuestion"
+description = "Exit?"
+
+[[keys]]
+name = "Exit"
+description = "Exit"
+
+[[keys]]
+name = "Cancel"
+description = "Cancel"

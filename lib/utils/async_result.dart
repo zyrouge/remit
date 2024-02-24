@@ -3,6 +3,14 @@ sealed class RuiAsyncResult<T, E extends Object> {
 
   bool isState<S extends RuiAsyncResult<T, E>>() => this is S;
 
+  S asState<S extends RuiAsyncResult<T, E>>() {
+    final RuiAsyncResult<T, E> value = this;
+    if (value is! S) {
+      throw Exception('Cannot cast "$runtimeType" as "${S.runtimeType}"');
+    }
+    return value;
+  }
+
   S? asStateOrNull<S extends RuiAsyncResult<T, E>>() {
     final RuiAsyncResult<T, E> value = this;
     if (value is! S) return null;
@@ -13,6 +21,11 @@ sealed class RuiAsyncResult<T, E extends Object> {
   bool get isProcessing => isState<RuiAsyncProcessing<T, E>>();
   bool get isSuccess => isState<RuiAsyncSuccess<T, E>>();
   bool get isFailed => isState<RuiAsyncFailed<T, E>>();
+
+  RuiAsyncWaiting<T, E> get asWaiting => asState();
+  RuiAsyncProcessing<T, E> get asProcessing => asState();
+  RuiAsyncSuccess<T, E> get asSuccess => asState();
+  RuiAsyncFailed<T, E> get asFailed => asState();
 
   RuiAsyncWaiting<T, E>? get asWaitingOrNull => asStateOrNull();
   RuiAsyncProcessing<T, E>? get asProcessingOrNull => asStateOrNull();

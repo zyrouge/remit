@@ -1,12 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import '../theme/color_scheme.dart';
 import '../theme/theme.dart';
+import 'spacer.dart';
 
 class RuiDialogBoxStyle {
   const RuiDialogBoxStyle({
     required this.color,
     this.width = defaultWidth,
     this.padding = defaultPadding,
+    this.bodyPadding = defaultBodyPadding,
     this.borderRadius = defaultBorderRadius,
     this.height,
     this.strokeColor,
@@ -17,6 +20,7 @@ class RuiDialogBoxStyle {
     final double? width,
     final double? height,
     final EdgeInsets? padding,
+    final EdgeInsets? bodyPadding,
     final BorderRadius? borderRadius,
   }) {
     final RuiColorScheme colorScheme = RuiTheme.colorSchemeOf(context);
@@ -26,6 +30,7 @@ class RuiDialogBoxStyle {
       width: width ?? defaultWidth,
       height: height,
       padding: padding ?? defaultPadding,
+      bodyPadding: bodyPadding ?? defaultBodyPadding,
       borderRadius: borderRadius ?? defaultBorderRadius,
     );
   }
@@ -33,6 +38,7 @@ class RuiDialogBoxStyle {
   final double width;
   final double? height;
   final EdgeInsets padding;
+  final EdgeInsets bodyPadding;
   final BorderRadius borderRadius;
   final Color color;
   final Color? strokeColor;
@@ -41,19 +47,24 @@ class RuiDialogBoxStyle {
       BorderRadius.all(Radius.circular(8));
 
   static const EdgeInsets defaultPadding = EdgeInsets.all(8);
-
+  static const EdgeInsets defaultBodyPadding =
+      EdgeInsets.symmetric(horizontal: 8);
   static const double defaultWidth = 320;
 }
 
 class RuiDialogBox extends StatelessWidget {
   const RuiDialogBox({
     required this.style,
-    required this.child,
+    required this.body,
+    this.title,
+    this.actions,
     super.key,
   });
 
   final RuiDialogBoxStyle style;
-  final Widget child;
+  final Widget body;
+  final Widget? title;
+  final List<Widget>? actions;
 
   @override
   Widget build(final BuildContext context) => Container(
@@ -67,6 +78,27 @@ class RuiDialogBox extends StatelessWidget {
               ? Border.all(color: style.strokeColor!)
               : null,
         ),
-        child: child,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (title != null) ...<Widget>[
+              RuiSpacer.verticalCompact,
+              Padding(
+                padding: style.bodyPadding,
+                child: DefaultTextStyle(
+                  style: RuiTheme.of(context).textTheme.title,
+                  child: title!,
+                ),
+              ),
+              RuiSpacer.verticalNormal,
+            ],
+            Padding(
+              padding: style.bodyPadding,
+              child: body,
+            ),
+            RuiSpacer.verticalRelaxed,
+            if (actions != null) Row(children: actions!),
+          ],
+        ),
       );
 }

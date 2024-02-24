@@ -3,8 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:remit/exports.dart';
 import '../../components/animations/fade_scale_transition2.dart';
 import '../../components/basic/back_button.dart';
-import '../../components/basic/button.dart';
-import '../../components/basic/dialog_box.dart';
 import '../../components/basic/scaffold.dart';
 import '../../components/basic/spacer.dart';
 import '../../components/localized.dart';
@@ -14,6 +12,9 @@ import '../../components/theme/theme.dart';
 import '../../utils/async_result.dart';
 import '../../utils/device.dart';
 import '../../utils/log.dart';
+import 'components/connection_request_dialog.dart';
+import 'components/exit_dialog.dart';
+import 'components/sender_content.dart';
 import 'start.dart';
 
 class RuiSendPageOptions {
@@ -44,8 +45,8 @@ class RuiSendPage extends StatefulWidget {
   State<RuiSendPage> createState() => _RuiSendPageState();
 }
 
-class _RuiConnectionRequestPair {
-  const _RuiConnectionRequestPair({
+class RuiSendPageConnectionRequestPair {
+  const RuiSendPageConnectionRequestPair({
     required this.address,
     required this.info,
     required this.completer,
@@ -58,8 +59,8 @@ class _RuiConnectionRequestPair {
 
 class _RuiSendPageState extends State<RuiSendPage> {
   RuiAsyncResult<RemitSender, Object> sender = RuiAsyncResult.waiting();
-  final List<_RuiConnectionRequestPair> requests =
-      <_RuiConnectionRequestPair>[];
+  final List<RuiSendPageConnectionRequestPair> requests =
+      <RuiSendPageConnectionRequestPair>[];
   bool showBackDialog = false;
   bool canPop = false;
 
@@ -92,7 +93,8 @@ class _RuiSendPageState extends State<RuiSendPage> {
           required final RemitReceiverBasicInfo receiverInfo,
         }) async {
           final Completer<bool> completer = Completer<bool>();
-          final _RuiConnectionRequestPair request = _RuiConnectionRequestPair(
+          final RuiSendPageConnectionRequestPair request =
+              RuiSendPageConnectionRequestPair(
             address: receiverAddress,
             info: receiverInfo,
             completer: completer,
@@ -136,7 +138,6 @@ class _RuiSendPageState extends State<RuiSendPage> {
       },
       child: RuiScaffold(
         maxWidth: RuiResponsivity.md,
-        scrollableBody: true,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -145,7 +146,18 @@ class _RuiSendPageState extends State<RuiSendPage> {
               onClick: () => Navigator.of(context).maybePop(),
             ),
             RuiSpacer.verticalCozy,
-            Text('hi'),
+            Text(context.t.send, style: theme.textTheme.display),
+            RuiSpacer.verticalCozy,
+            switch (sender) {
+              RuiAsyncWaiting<RemitSender, Object>() ||
+              RuiAsyncProcessing<RemitSender, Object>() =>
+                const SizedBox.shrink(),
+              RuiAsyncSuccess<RemitSender, Object>(
+                value: final RemitSender value,
+              ) =>
+                RuiSendPageSenderContent(sender: value),
+              RuiAsyncFailed<RemitSender, Object>() => const SizedBox.shrink(),
+            },
             RuiSpacer.verticalCozy,
           ],
         ),
@@ -155,7 +167,14 @@ class _RuiSendPageState extends State<RuiSendPage> {
               duration: RuiAnimationDurations.normal,
               child: showBackDialog || requests.isNotEmpty
                   ? ModalBarrier(
-                      dismissible: false,
+                      dismissible: showBackDialog,
+                      onDismiss: () {
+                        if (showBackDialog) {
+                          setState(() {
+                            showBackDialog = false;
+                          });
+                        }
+                      },
                       color:
                           theme.colorScheme.backgroundVariant.withOpacity(0.25),
                     )
@@ -174,105 +193,27 @@ class _RuiSendPageState extends State<RuiSendPage> {
               child: child,
             ),
             child: showBackDialog
-                ? _RuiExitDialog(
-                    shouldExit: (final bool exit) {
-                      if (exit) {
-                        setState(() {
-                          showBackDialog = false;
-                          canPop = true;
-                        });
-                        Navigator.of(context).maybePop();
-                      } else {
-                        setState(() {
-                          showBackDialog = false;
-                        });
-                      }
-                    },
-                  )
+                ? RuiSendPageExitDialog(shouldExit: onExit)
                 : requests.isNotEmpty
-                    ? _RuiConnectionRequestDialog(pair: requests.first)
+                    ? RuiSendPageConnectionRequestDialog(pair: requests.first)
                     : null,
           ),
         ],
       ),
     );
   }
-}
 
-class _RuiExitDialog extends StatelessWidget {
-  const _RuiExitDialog({
-    required this.shouldExit,
-  });
-
-  final void Function(bool) shouldExit;
-
-  @override
-  Widget build(final BuildContext context) => RuiDialogBox(
-        style: RuiDialogBoxStyle.standard(context),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(context.t.doYouReallyWantToStopSharingFiles),
-            RuiSpacer.verticalNormal,
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: RuiButton(
-                    style: RuiButtonStyle.outlined(),
-                    onClick: () => shouldExit(false),
-                    child: Text(context.t.no),
-                  ),
-                ),
-                RuiSpacer.horizontalCompact,
-                Expanded(
-                  child: RuiButton(
-                    style: RuiButtonStyle.primary(),
-                    onClick: () => shouldExit(true),
-                    child: Text(context.t.yes),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-}
-
-class _RuiConnectionRequestDialog extends StatelessWidget {
-  const _RuiConnectionRequestDialog({
-    required this.pair,
-  });
-
-  final _RuiConnectionRequestPair pair;
-
-  @override
-  Widget build(final BuildContext context) => RuiDialogBox(
-        style: RuiDialogBoxStyle.standard(context),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text('${pair.info.username} is requesting connection'),
-            RuiSpacer.verticalNormal,
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: RuiButton(
-                    style: RuiButtonStyle.outlined(),
-                    onClick: () => pair.completer.complete(false),
-                    child: Text(context.t.deny),
-                  ),
-                ),
-                RuiSpacer.horizontalCompact,
-                Expanded(
-                  child: RuiButton(
-                    style: RuiButtonStyle.primary(),
-                    onClick: () => pair.completer.complete(true),
-                    child: Text(context.t.accept),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
+  void onExit(final bool exit) {
+    if (exit) {
+      setState(() {
+        showBackDialog = false;
+        canPop = true;
+      });
+      Navigator.of(context).maybePop();
+    } else {
+      setState(() {
+        showBackDialog = false;
+      });
+    }
+  }
 }

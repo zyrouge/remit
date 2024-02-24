@@ -44,4 +44,16 @@ extension RuiThemeStateUtils on RuiColorScheme {
         RuiThemeState.hovered || RuiThemeState.active => onSurfaceVariant,
         RuiThemeState.disabled => onDisabled,
       };
+
+  Color errorWhenState(final RuiThemeState state) => switch (state) {
+        RuiThemeState.normal => error,
+        RuiThemeState.hovered || RuiThemeState.active => errorVariant,
+        RuiThemeState.disabled => disabled,
+      };
+
+  Color onErrorWhenState(final RuiThemeState state) => switch (state) {
+        RuiThemeState.normal => onError,
+        RuiThemeState.hovered || RuiThemeState.active => onErrorVariant,
+        RuiThemeState.disabled => onDisabled,
+      };
 }

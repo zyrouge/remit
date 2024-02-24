@@ -73,6 +73,34 @@ class RuiButtonStyle {
         height: height,
       );
 
+  factory RuiButtonStyle.error({
+    final TextStyle? textStyle,
+    final EdgeInsets? padding,
+    final BorderRadius? borderRadius,
+    final double? width,
+    final double? height,
+  }) =>
+      RuiButtonStyle(
+        color: (final BuildContext context, final RuiInteractiveState state) =>
+            RuiTheme.of(context)
+                .colorScheme
+                .errorWhenState(state.toThemeState()),
+        textStyle:
+            (final BuildContext context, final RuiInteractiveState state) {
+          final RuiTheme theme = RuiTheme.of(context);
+          final RuiColorScheme colorScheme = theme.colorScheme;
+          final TextStyle nTextStyle =
+              textStyle ?? DefaultTextStyle.of(context).style;
+          final Color color =
+              colorScheme.onErrorWhenState(state.toThemeState());
+          return nTextStyle.copyWith(color: color);
+        },
+        padding: padding ?? defaultPadding,
+        borderRadius: borderRadius ?? defaultBorderRadius,
+        width: width,
+        height: height,
+      );
+
   factory RuiButtonStyle.outlined({
     final TextStyle? textStyle,
     final EdgeInsets? padding,
