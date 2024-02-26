@@ -241,7 +241,7 @@ class _RuiButtonState extends State<RuiButton> {
         onLongPressStart: (final _) => updateHovered(true),
         onLongPressEnd: (final _) => updateHovered(false),
         child: MouseRegion(
-          cursor: SystemMouseCursors.click,
+          cursor: widget.enabled ? SystemMouseCursors.click : MouseCursor.defer,
           onEnter: (final _) => updateHovered(true),
           onExit: (final _) => updateHovered(false),
           child: AnimatedContainer(

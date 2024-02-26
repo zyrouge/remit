@@ -117,3 +117,15 @@ description = "Exit"
 [[keys]]
 name = "Cancel"
 description = "Cancel"
+
+[[keys]]
+name = "AddFile"
+description = "Add file"
+
+[[keys]]
+name = "AddFolder"
+description = "Add folder"
+
+[[keys]]
+name = "RemoveSelected"
+description = "Remove selected"
