@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:remit/exports.dart';
+import '../../components/advanced/async_result_builder.dart';
+import '../../components/animations/animated_switcher_layout.dart';
+import '../../components/animations/cross_fade_transition.dart';
 import '../../components/animations/fade_scale_transition2.dart';
 import '../../components/basic/back_button.dart';
 import '../../components/basic/scaffold.dart';
+import '../../components/basic/simple_message.dart';
 import '../../components/basic/spacer.dart';
 import '../../components/localized.dart';
 import '../../components/theme/animation_durations.dart';
@@ -58,7 +62,7 @@ class RuiSendPageConnectionRequestPair {
 }
 
 class _RuiSendPageState extends State<RuiSendPage> {
-  RuiAsyncResult<RemitSender, Object> sender = RuiAsyncResult.waiting();
+  RuiAsyncResult<RemitSender, Object> sender = RuiAsyncResult.processing();
   final List<RuiSendPageConnectionRequestPair> requests =
       <RuiSendPageConnectionRequestPair>[];
   bool showBackDialog = false;
@@ -148,23 +152,47 @@ class _RuiSendPageState extends State<RuiSendPage> {
             RuiSpacer.verticalCozy,
             Text(context.t.send, style: theme.textTheme.display),
             RuiSpacer.verticalCozy,
-            switch (sender) {
-              RuiAsyncWaiting<RemitSender, Object>() ||
-              RuiAsyncProcessing<RemitSender, Object>() =>
-                const SizedBox.shrink(),
-              RuiAsyncSuccess<RemitSender, Object>(
-                value: final RemitSender value,
+            AnimatedSwitcher(
+              duration: RuiAnimationDurations.slow,
+              layoutBuilder:
+                  const AnimatedSwitcherStackedLayout.topLeft().build,
+              transitionBuilder: (
+                final Widget child,
+                final Animation<double> animation,
               ) =>
-                RuiSendPageSenderContent(sender: value),
-              RuiAsyncFailed<RemitSender, Object>() => const SizedBox.shrink(),
-            },
+                  CrossFadeTransition(
+                animation:
+                    animation.drive(CurveTween(curve: Curves.decelerate)),
+                child: child,
+              ),
+              child: RuiAsyncResultBuilder<RemitSender, Object>(
+                key: ValueKey<RuiAsyncResult<RemitSender, Object>>(sender),
+                result: sender,
+                waiting: (final BuildContext context) =>
+                    const SizedBox.shrink(),
+                processing: (final BuildContext context) =>
+                    RuiSimpleMessage.loading(
+                  text: Text(context.t.starting),
+                  style: RuiSimpleMessageStyle.standard(
+                    context,
+                    padding: EdgeInsets.zero,
+                  ),
+                ),
+                success:
+                    (final BuildContext context, final RemitSender value) =>
+                        RuiSendPageSenderContent(sender: value),
+                // TODO: handle error
+                failed: (final BuildContext context, final _) =>
+                    const SizedBox.shrink(),
+              ),
+            ),
             RuiSpacer.verticalCozy,
           ],
         ),
         overlays: <Widget>[
           Positioned.fill(
             child: AnimatedSwitcher(
-              duration: RuiAnimationDurations.normal,
+              duration: RuiAnimationDurations.fastest,
               child: showBackDialog || requests.isNotEmpty
                   ? ModalBarrier(
                       dismissible: showBackDialog,

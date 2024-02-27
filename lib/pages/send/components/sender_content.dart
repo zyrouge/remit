@@ -7,6 +7,7 @@ import '../../../components/basic/button.dart';
 import '../../../components/basic/divider.dart';
 import '../../../components/basic/horizontal_content.dart';
 import '../../../components/basic/icon.dart';
+import '../../../components/basic/simple_message.dart';
 import '../../../components/basic/spacer.dart';
 import '../../../components/localized.dart';
 import '../../../components/theme/animation_durations.dart';
@@ -35,17 +36,20 @@ class _RuiSendPageSenderContentState extends State<RuiSendPageSenderContent> {
   final Set<RemitFileStaticData> selectedFiles = <RemitFileStaticData>{};
   final Set<RemitFolderStaticData> selectedFolders = <RemitFolderStaticData>{};
 
-  Future<void> updatePath(final List<String> nPaths) async {
+  @override
+  void initState() {
+    super.initState();
+    updatePath(<String>[]);
+  }
+
+  Future<void> updatePath(final List<String> parts) async {
     setState(() {
-      paths = nPaths;
+      paths = parts;
       selectedFiles.clear();
       selectedFolders.clear();
     });
     try {
       entities = RuiAsyncResult.processing();
-      // final RemitFilesystemEntity? folder =
-      //     await widget.sender.filesystem.resolvePaths(nPaths);
-      // if (folder is! RemitFolder) return;
       final RemitFilesystemStaticDataPairs pairs =
           await widget.sender.filesystem.listAsStaticDataPairs();
       if (!mounted) return;
@@ -57,11 +61,10 @@ class _RuiSendPageSenderContentState extends State<RuiSendPageSenderContent> {
     }
   }
 
-  Future<void> updatePathPush(final String part) =>
+  Future<void> pushPath(final String part) =>
       updatePath(paths + <String>[part]);
 
-  Future<void> updatePathPop() =>
-      updatePath(paths.sublist(0, paths.length - 1));
+  Future<void> popPath() => updatePath(paths.sublist(0, paths.length - 1));
 
   Future<void> openFilePicker() async {
     final List<RuiPickedFile> files = await RuiFilePicker.pick();
@@ -107,14 +110,50 @@ class _RuiSendPageSenderContentState extends State<RuiSendPageSenderContent> {
     setState(() {});
   }
 
+  Widget buildLabeledText(
+    final BuildContext context,
+    final String label,
+    final String text,
+  ) {
+    final RuiTheme theme = RuiTheme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(label, style: theme.textTheme.small),
+        RuiSpacer.verticalTight,
+        Text(text, style: theme.textTheme.title),
+      ],
+    );
+  }
+
   @override
   Widget build(final BuildContext context) {
     final RuiTheme theme = RuiTheme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          'Sharing as ${sender.info.username} to ${sender.connections.length} connections.',
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            buildLabeledText(
+              context,
+              context.t.sharingAs,
+              widget.sender.info.username,
+            ),
+            const RuiSpacer.horizontal(40),
+            buildLabeledText(
+              context,
+              context.t.connections,
+              widget.sender.connections.length.toString(),
+            ),
+            const RuiSpacer.horizontal(40),
+            buildLabeledText(
+              context,
+              context.t.entities,
+              widget.sender.filesystem.entities.length.toString(),
+            ),
+          ],
         ),
         RuiSpacer.verticalNormal,
         const RuiDivider.horizontal(),
@@ -156,35 +195,48 @@ class _RuiSendPageSenderContentState extends State<RuiSendPageSenderContent> {
         RuiAsyncResultBuilder<RemitFilesystemStaticDataPairs, Object>(
           result: entities,
           waiting: (final BuildContext context) => const SizedBox.shrink(),
-          processing: (final BuildContext context) => const SizedBox.shrink(),
+          processing: (final BuildContext context) => RuiSimpleMessage.icon(
+            icon: Ionicons.documents_outline,
+            text: TextSpan(text: context.t.loading),
+            style: RuiSimpleMessageStyle.standard(context),
+          ),
           success: (
             final BuildContext context,
             final RemitFilesystemStaticDataPairs value,
-          ) =>
-              RuiExplorer(
-            files: value.files
-                .map(
-                  (final RemitFileStaticData x) =>
-                      RuiExplorerItem<RemitFileStaticData>(
-                    value: x,
-                    selected: selectedFiles.contains(x),
-                    onSelect: () => toggleFileSelect(x),
-                    onClick: () => toggleFileSelect(x),
-                  ),
-                )
-                .toList(),
-            folders: value.folders
-                .map(
-                  (final RemitFolderStaticData x) =>
-                      RuiExplorerItem<RemitFolderStaticData>(
-                    value: x,
-                    selected: selectedFolders.contains(x),
-                    onSelect: () => toggleFolderSelect(x),
-                    onClick: () => updatePathPush(x.basename),
-                  ),
-                )
-                .toList(),
-          ),
+          ) {
+            if (value.files.isEmpty && value.folders.isEmpty) {
+              return RuiSimpleMessage.icon(
+                icon: Ionicons.documents_outline,
+                text: TextSpan(text: context.t.thisIsEmptyMaybeAddSomeFiles),
+                style: RuiSimpleMessageStyle.dimmed(context),
+              );
+            }
+            return RuiExplorer(
+              files: value.files
+                  .map(
+                    (final RemitFileStaticData x) =>
+                        RuiExplorerItem<RemitFileStaticData>(
+                      value: x,
+                      selected: selectedFiles.contains(x),
+                      onSelect: () => toggleFileSelect(x),
+                      onClick: () => toggleFileSelect(x),
+                    ),
+                  )
+                  .toList(),
+              folders: value.folders
+                  .map(
+                    (final RemitFolderStaticData x) =>
+                        RuiExplorerItem<RemitFolderStaticData>(
+                      value: x,
+                      selected: selectedFolders.contains(x),
+                      onSelect: () => toggleFolderSelect(x),
+                      onClick: () => pushPath(x.basename),
+                    ),
+                  )
+                  .toList(),
+            );
+          },
+          // TODO: handle error
           failed: (final BuildContext context, final _) =>
               const SizedBox.shrink(),
         ),

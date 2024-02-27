@@ -129,3 +129,42 @@ description = "Add folder"
 [[keys]]
 name = "RemoveSelected"
 description = "Remove selected"
+
+[[keys]]
+name = "ThisIsEmptyMaybeAddSomeFiles"
+description = "This is empty. Maybe add some files?"
+
+[[keys]]
+name = "Loading"
+description = "Loading..."
+
+[[keys]]
+name = "Starting"
+description = "Starting..."
+
+[[keys]]
+name = "XKb"
+description = "X KB"
+parameters = ["x"]
+
+[[keys]]
+name = "XMb"
+description = "X MB"
+parameters = ["x"]
+
+[[keys]]
+name = "XGb"
+description = "X GB"
+parameters = ["x"]
+
+[[keys]]
+name = "SharingAs"
+description = "Sharing as"
+
+[[keys]]
+name = "Connections"
+description = "Connections"
+
+[[keys]]
+name = "Entities"
+description = "Entities"

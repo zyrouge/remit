@@ -23,7 +23,6 @@ dependencies:
     remit:
         git:
             url: https://github.com/zyrouge/dart_remit.git
-    sprintf: ^7.0.0
 
 dev_dependencies:
     build_runner: ^2.4.8

@@ -5,6 +5,7 @@ import '../../basic/button.dart';
 import '../../basic/horizontal_content.dart';
 import '../../basic/icon.dart';
 import '../../basic/spacer.dart';
+import '../../localized.dart';
 import '../../theme/animation_durations.dart';
 import '../../theme/theme.dart';
 
@@ -39,7 +40,7 @@ class RuiExplorer extends StatelessWidget {
             for (final RuiExplorerItem<RemitFileStaticData> x in files)
               _RuiExplorerListItem(
                 name: x.value.basename,
-                label: bytesToString(x.value.size),
+                label: bytesToString(context, x.value.size),
                 icon: Ionicons.document,
                 selected: x.selected,
                 onSelect: x.onSelect,
@@ -57,13 +58,17 @@ class RuiExplorer extends StatelessWidget {
         ),
       );
 
-  String bytesToString(final int bytes) {
+  String bytesToString(final BuildContext context, final int bytes) {
     final double kb = bytes / 1024;
-    if (kb < 1024) {
-      return '${kb.toStringAsFixed(1)} KB';
+    if (kb < 1000) {
+      return context.t.xKb(kb.toStringAsFixed(1));
     }
-    final double mb = bytes / 1024;
-    return '${mb.toStringAsFixed(2)} MB';
+    final double mb = kb / 1024;
+    if (mb < 1000) {
+      return context.t.xMb(mb.toStringAsFixed(2));
+    }
+    final double gb = mb / 1024;
+    return context.t.xGb(gb.toStringAsFixed(2));
   }
 }
 
@@ -108,9 +113,13 @@ class _RuiExplorerListItem extends StatelessWidget {
                 child: DecoratedBox(
                   key: ValueKey<bool>(selected),
                   decoration: BoxDecoration(
-                    color: selected ? theme.colorScheme.primary : null,
+                    color: selected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.backgroundVariant,
                     border: Border.all(
-                      color: selected ? theme.colorScheme.primary : textColor,
+                      color: selected
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.surface,
                     ),
                   ),
                   child: SizedBox.square(

@@ -8,17 +8,32 @@ const appTranslationsDir = p.join(rootDir, "lib/services/translations");
  * @type {import("phrasey").PhraseyHooksHandler}
  */
 const hook = {
-    onTranslationsBuildFinished: async ({ phrasey, state, log }) => {
-        if (!["build", "watch"].includes(phrasey.options.source)) {
+    onSchemaParsed: async ({ phrasey, state, log }) => {
+        if (!needsSync(phrasey.options.source)) {
             log.info("Skipping post-build due to non-build source");
             return;
         }
         await createTranslationDart(phrasey, state, log);
+    },
+    onTranslationsBuildFinished: async ({ phrasey, state, log }) => {
+        if (!needsSync(phrasey.options.source)) {
+            log.info("Skipping post-build due to non-build source");
+            return;
+        }
         await createTranslationsDart(phrasey, state, log);
     },
 };
 
 module.exports = hook;
+
+/**
+ *
+ * @param {string} source
+ * @returns {bool}
+ */
+function needsSync(source) {
+    return ["build", "watch"].includes(source);
+}
 
 /**
  *
@@ -84,10 +99,12 @@ async function createTranslationDart(phrasey, state, log) {
     for (const x of state.getSchema().z.keys) {
         const varName = `${x.name[0].toLowerCase()}${x.name.slice(1)}`;
         if (x.parameters && x.parameters.length > 0) {
-            const params = x.parameters.map((x) => `String ${x}`).join(", ");
+            const params = x.parameters
+                .map((x) => `final String ${x}`)
+                .join(", ");
             const callArgs = x.parameters.join(", ");
             dynamicKeys.push(
-                `    String ${varName}(${params}) => sprintf(_keysJson['${x.name}']!, ${callArgs});`
+                `    String ${varName}(${params}) => _stringFormat(_keysJson['${x.name}']!, <String>[${callArgs}]);`
             );
         } else {
             staticKeys.push(
