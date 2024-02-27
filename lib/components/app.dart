@@ -11,6 +11,7 @@ import '../pages/settings/settings.dart';
 import '../services/settings/settings.dart';
 import '../services/translations/translation.dart';
 import '../services/translations/translations.dart';
+import '../utils/meta.dart';
 import 'localized.dart';
 import 'theme/animation_durations.dart';
 import 'theme/color_scheme.dart';
@@ -69,6 +70,7 @@ class _RuiAppState extends State<RuiApp> {
               Provider<RuiSettingsData>.value(value: settings),
             ],
             child: WidgetsApp(
+              title: RuiMeta.appName,
               textStyle: theme.textTheme.body
                   .copyWith(color: theme.colorScheme.onBackground),
               color: theme.colorScheme.background,
