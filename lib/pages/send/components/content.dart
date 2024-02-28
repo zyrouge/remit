@@ -16,8 +16,8 @@ import '../../../services/filesystem/file_picker.dart';
 import '../../../utils/async_result.dart';
 import '../../../utils/extensions.dart';
 
-class RuiSendPageSenderContent extends StatefulWidget {
-  const RuiSendPageSenderContent({
+class RuiSendPageContent extends StatefulWidget {
+  const RuiSendPageContent({
     required this.sender,
     super.key,
   });
@@ -25,11 +25,10 @@ class RuiSendPageSenderContent extends StatefulWidget {
   final RemitSender sender;
 
   @override
-  State<RuiSendPageSenderContent> createState() =>
-      _RuiSendPageSenderContentState();
+  State<RuiSendPageContent> createState() => _RuiSendPageContentState();
 }
 
-class _RuiSendPageSenderContentState extends State<RuiSendPageSenderContent> {
+class _RuiSendPageContentState extends State<RuiSendPageContent> {
   List<String> paths = <String>[];
   RuiAsyncResult<RemitFilesystemStaticDataPairs, Object> entities =
       RuiAsyncResult.waiting();
@@ -51,7 +50,7 @@ class _RuiSendPageSenderContentState extends State<RuiSendPageSenderContent> {
     try {
       entities = RuiAsyncResult.processing();
       final RemitFilesystemStaticDataPairs pairs =
-          await widget.sender.filesystem.listAsStaticDataPairs();
+          await sender.filesystem.listAsStaticDataPairs();
       if (!mounted) return;
       setState(() {
         entities = RuiAsyncResult.success(pairs);
@@ -69,7 +68,7 @@ class _RuiSendPageSenderContentState extends State<RuiSendPageSenderContent> {
   Future<void> openFilePicker() async {
     final List<RuiPickedFile> files = await RuiFilePicker.pick();
     for (final RuiPickedFile x in files) {
-      widget.sender.updateFilesystem((final RemitVirtualFolder root) {
+      sender.updateFilesystem((final RemitVirtualFolder root) {
         root.addEntity(x);
       });
     }
@@ -78,13 +77,13 @@ class _RuiSendPageSenderContentState extends State<RuiSendPageSenderContent> {
 
   Future<void> removeSelectedFiles() async {
     for (final RemitFileStaticData x in selectedFiles) {
-      widget.sender.updateFilesystem((final RemitVirtualFolder root) {
+      sender.updateFilesystem((final RemitVirtualFolder root) {
         // TODO: use remove method
         root.entities.remove(x.basename);
       });
     }
     for (final RemitFolderStaticData x in selectedFolders) {
-      widget.sender.updateFilesystem((final RemitVirtualFolder root) {
+      sender.updateFilesystem((final RemitVirtualFolder root) {
         // TODO: use remove method
         root.entities.remove(x.basename);
       });
@@ -133,25 +132,29 @@ class _RuiSendPageSenderContentState extends State<RuiSendPageSenderContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Row(
-          mainAxisSize: MainAxisSize.min,
+        Wrap(
+          spacing: 40,
+          runSpacing: RuiSpacer.normalPx,
           children: <Widget>[
             buildLabeledText(
               context,
               context.t.sharingAs,
-              widget.sender.info.username,
+              sender.info.username,
             ),
-            const RuiSpacer.horizontal(40),
+            buildLabeledText(
+              context,
+              context.t.inviteCode,
+              sender.inviteCode,
+            ),
             buildLabeledText(
               context,
               context.t.connections,
-              widget.sender.connections.length.toString(),
+              sender.connections.length.toString(),
             ),
-            const RuiSpacer.horizontal(40),
             buildLabeledText(
               context,
               context.t.entities,
-              widget.sender.filesystem.entities.length.toString(),
+              sender.filesystem.entities.length.toString(),
             ),
           ],
         ),
@@ -204,11 +207,16 @@ class _RuiSendPageSenderContentState extends State<RuiSendPageSenderContent> {
             final BuildContext context,
             final RemitFilesystemStaticDataPairs value,
           ) {
-            if (value.files.isEmpty && value.folders.isEmpty) {
+            if (value.isEmpty) {
               return RuiSimpleMessage.icon(
                 icon: Ionicons.documents_outline,
                 text: TextSpan(text: context.t.thisIsEmptyMaybeAddSomeFiles),
-                style: RuiSimpleMessageStyle.dimmed(context),
+                style: RuiSimpleMessageStyle.dimmed(
+                  context,
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.sizeOf(context).height / 6,
+                  ),
+                ),
               );
             }
             return RuiExplorer(

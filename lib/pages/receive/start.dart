@@ -7,52 +7,49 @@ import 'package:remit/exports.dart';
 import '../../components/app.dart';
 import '../../components/basic/back_button.dart';
 import '../../components/basic/button.dart';
+import '../../components/basic/circular_loading_indicator.dart';
 import '../../components/basic/dropdown.dart';
 import '../../components/basic/horizontal_content.dart';
 import '../../components/basic/icon.dart';
+import '../../components/basic/interactive.dart';
 import '../../components/basic/scaffold.dart';
 import '../../components/basic/spacer.dart';
 import '../../components/basic/text_field.dart';
 import '../../components/localized.dart';
+import '../../components/theme/animation_durations.dart';
 import '../../components/theme/responsivity.dart';
+import '../../components/theme/states.dart';
 import '../../components/theme/theme.dart';
 import '../../services/settings/settings.dart';
 import '../../utils/async_result.dart';
+import '../../utils/device.dart';
 import '../../utils/extensions.dart';
 import '../../utils/list.dart';
+import '../../utils/log.dart';
 import '../../utils/random_names.dart';
 import '../settings/components/field.dart';
-import 'send.dart';
+import 'receive.dart';
 
-enum RuiConnectionAcceptModes {
-  ask,
-  allowAll;
-
-  String toLocalizedString(final BuildContext context) => switch (this) {
-        ask => context.t.ask,
-        allowAll => context.t.allowAll,
-      };
-}
-
-class RuiSendStartPage extends StatefulWidget {
-  const RuiSendStartPage({
+class RuiReceiveStartPage extends StatefulWidget {
+  const RuiReceiveStartPage({
     super.key,
   });
 
   @override
-  State<RuiSendStartPage> createState() => _RuiSendStartPageState();
+  State<RuiReceiveStartPage> createState() => _RuiReceiveStartPageState();
 }
 
-class _RuiSendStartPageState extends State<RuiSendStartPage> {
+class _RuiReceiveStartPageState extends State<RuiReceiveStartPage> {
   String? host;
   late final TextEditingController usernameTextController;
   late final TextEditingController portTextController;
-  RuiConnectionAcceptModes acceptMode = RuiConnectionAcceptModes.ask;
-  bool secure = true;
+  late final TextEditingController inviteCodeTextController;
 
   late final String defaultUsername;
   RuiAsyncResult<List<InternetAddress>, Object> availableAddresses =
       RuiAsyncResult.waiting();
+  bool isConnecting = false;
+  String? errorMessage;
 
   @override
   void initState() {
@@ -60,7 +57,8 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
     final RuiSettingsData settings = context.read();
     defaultUsername = settings.username ?? RuiRandomNames.generate();
     usernameTextController = TextEditingController(text: defaultUsername);
-    portTextController = TextEditingController(text: defaultPort.toString());
+    portTextController = TextEditingController();
+    inviteCodeTextController = TextEditingController();
     fetchAvailableAddresses();
   }
 
@@ -69,6 +67,7 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
     super.dispose();
     usernameTextController.dispose();
     portTextController.dispose();
+    inviteCodeTextController.dispose();
   }
 
   Future<void> fetchAvailableAddresses() async {
@@ -92,6 +91,43 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
     }
   }
 
+  Future<void> startConnecting() async {
+    setState(() {
+      isConnecting = true;
+    });
+    try {
+      final String? device = await getDeviceName();
+      final RemitReceiver receiver = await RemitReceiver.create(
+        info: RemitReceiverBasicInfo(
+          username: usernameTextController.text,
+          device: device,
+        ),
+        address: RemitConnectionAddress(host!, 0),
+        senderAddress: RemitConnectionAddress(
+          host!,
+          int.parse(portTextController.text),
+        ),
+        inviteCode: inviteCodeTextController.text,
+        logger: log,
+      );
+      if (!mounted) {
+        receiver.destroy();
+        return;
+      }
+      Navigator.of(context).pushNamed(
+        RuiApp.receive,
+        arguments: RuiReceivePageOptions(receiver: receiver),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      log.error('RemitReceiveStartPage', error.toString());
+      setState(() {
+        isConnecting = false;
+        errorMessage = error.toString();
+      });
+    }
+  }
+
   @override
   Widget build(final BuildContext context) {
     final RuiTheme theme = RuiTheme.of(context);
@@ -106,10 +142,10 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
             onClick: () => Navigator.of(context).pop(),
           ),
           RuiSpacer.verticalCozy,
-          Text(context.t.send, style: theme.textTheme.display),
+          Text(context.t.receive, style: theme.textTheme.display),
           RuiSpacer.verticalTight,
           Text(
-            context.t.senderConfigurationMessage,
+            context.t.receiverConfigurationMessage,
             style: DefaultTextStyle.of(context)
                 .style
                 .copyWith(color: RuiTheme.colorSchemeOf(context).dimmed),
@@ -182,86 +218,91 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
           RuiSpacer.verticalRelaxed,
           RuiSettingsField(
             label: context.t.networkPort,
-            child: RuiHorizontalContent(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: RuiSpacer.tightPx,
-              trailing: RuiButton(
-                enabled: portTextController.text != defaultPort.toString(),
-                style: RuiButtonStyle.surface(),
-                onClick: () {
-                  portTextController.text = defaultPort.toString();
-                },
-                child: const RuiIcon(Ionicons.refresh_sharp),
-              ),
-              child: Expanded(
-                child: RuiTextField(
-                  style: RuiTextFieldStyle.outlined(context),
-                  type: TextInputType.number,
-                  controller: portTextController,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  validate: validatePort,
-                  onChanged: (final _) => updateStates(),
-                  onFinished: (final _) {},
-                ),
-              ),
+            child: RuiTextField(
+              style: RuiTextFieldStyle.outlined(context),
+              type: TextInputType.number,
+              controller: portTextController,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              validate: validatePort,
+              onChanged: (final _) => updateStates(),
+              onFinished: (final _) {},
             ),
           ),
           RuiSpacer.verticalRelaxed,
           RuiSettingsField(
-            label: context.t.connectionAcceptMode,
-            child: RuiDropdown<RuiConnectionAcceptModes>(
-              value: acceptMode,
-              labels: RuiConnectionAcceptModes.values.associateWith(
-                (final RuiConnectionAcceptModes x) =>
-                    x.toLocalizedString(context),
-              ),
-              style: RuiButtonStyle.outlined(),
-              popupStyle: RuiDropdownPopupStyle.standard(context),
-              itemStyle: RuiButtonStyle.text(),
-              onChanged: (final RuiConnectionAcceptModes value) {
-                setState(() {
-                  acceptMode = value;
-                });
-              },
-            ),
-          ),
-          RuiSpacer.verticalRelaxed,
-          RuiSettingsField(
-            label: context.t.secure,
-            child: RuiDropdown<bool>(
-              value: secure,
-              labels: <bool, String>{
-                true: context.t.yes,
-                false: context.t.no,
-              },
-              style: RuiButtonStyle.outlined(),
-              popupStyle: RuiDropdownPopupStyle.standard(context),
-              itemStyle: RuiButtonStyle.text(),
-              onChanged: (final bool value) {
-                setState(() {
-                  secure = value;
-                });
-              },
+            label: context.t.inviteCode,
+            child: RuiTextField(
+              style: RuiTextFieldStyle.outlined(context),
+              controller: inviteCodeTextController,
+              validate: validateInviteCode,
+              onChanged: (final _) => updateStates(),
+              onFinished: (final _) {},
             ),
           ),
           RuiSpacer.verticalRelaxed,
           RuiButton(
-            style: RuiButtonStyle.primary(),
-            enabled: validateAll(),
-            onClick: () => Navigator.of(context).pushNamed(
-              RuiApp.send,
-              arguments: RuiSendPageOptions(
-                username: usernameTextController.text,
-                host: host!,
-                port: int.parse(portTextController.text),
-                acceptMode: acceptMode,
-                secure: secure,
-              ),
+            style: RuiButtonStyle(
+              color: (
+                final BuildContext context,
+                final RuiInteractiveState state,
+              ) {
+                if (isConnecting) {
+                  return theme.colorScheme.primaryVariant;
+                }
+                return theme.colorScheme.primaryWhenState(state.toThemeState());
+              },
+              textStyle: (
+                final BuildContext context,
+                final RuiInteractiveState state,
+              ) {
+                final TextStyle textStyle = DefaultTextStyle.of(context).style;
+                final Color color = isConnecting
+                    ? theme.colorScheme.onPrimaryVariant.withOpacity(0.5)
+                    : theme.colorScheme
+                        .onPrimaryWhenState(state.toThemeState());
+                return textStyle.copyWith(color: color);
+              },
             ),
-            child: Text(context.t.start),
+            enabled: validateAll() && !isConnecting,
+            onClick: startConnecting,
+            child: AnimatedSwitcher(
+              duration: RuiAnimationDurations.fastest,
+              child: !isConnecting
+                  ? Text(context.t.connect)
+                  : RuiHorizontalContent(
+                      leading: RuiCircularLoadingIndicator(
+                        style: RuiCircularLoadingIndicatorStyle(
+                          foregroundColor: theme.colorScheme.onPrimaryVariant
+                              .withOpacity(0.5),
+                          backgroundColor: theme.colorScheme.onPrimaryVariant
+                              .withOpacity(0.25),
+                          size: DefaultTextStyle.of(context).style.fontSize! *
+                              0.9,
+                        ),
+                      ),
+                      child: Text(context.t.connecting),
+                    ),
+            ),
           ),
+          if (errorMessage != null) ...<Widget>[
+            RuiSpacer.verticalNormal,
+            Text(
+              context.t.couldntConnectMessage,
+              style: DefaultTextStyle.of(context).style.copyWith(
+                    color: theme.colorScheme.error,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            RuiSpacer.verticalTight,
+            Text(
+              errorMessage!,
+              style: DefaultTextStyle.of(context)
+                  .style
+                  .copyWith(color: theme.colorScheme.error),
+            ),
+          ],
           RuiSpacer.verticalCozy,
         ],
       ),
@@ -284,14 +325,20 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
     return null;
   }
 
+  String? validateInviteCode(final String value) {
+    if (value.isEmpty || value != value.trim()) {
+      return context.t.invalidInviteCode;
+    }
+    return null;
+  }
+
   bool validateAll() =>
       validateUsername(usernameTextController.text) == null &&
       validatePort(portTextController.text) == null &&
+      validateInviteCode(inviteCodeTextController.text) == null &&
       host != null;
 
   void updateStates() {
     setState(() {});
   }
-
-  static const int defaultPort = 0;
 }

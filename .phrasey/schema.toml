@@ -63,8 +63,8 @@ name = "Sender"
 description = "Sender"
 
 [[keys]]
-name = "BeforeYouStartEnsureTheConfiguration"
-description = "Before you start, ensure the configuration."
+name = "SenderConfigurationMessage"
+description = "Before you start sending, ensure the configuration."
 
 [[keys]]
 name = "Start"
@@ -168,3 +168,27 @@ description = "Connections"
 [[keys]]
 name = "Entities"
 description = "Entities"
+
+[[keys]]
+name = "Connect"
+description = "Connect"
+
+[[keys]]
+name = "ReceiverConfigurationMessage"
+description = "Enter the credentials of the sender you want to connect to."
+
+[[keys]]
+name = "InviteCode"
+description = "Invite code"
+
+[[keys]]
+name = "InvalidInviteCode"
+description = "Invalid invite code"
+
+[[keys]]
+name = "CouldntConnectMessage"
+description = "Couldn't establish connection. Invalid credentials?"
+
+[[keys]]
+name = "Connecting"
+description = "Connecting..."

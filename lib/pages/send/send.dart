@@ -17,8 +17,8 @@ import '../../utils/async_result.dart';
 import '../../utils/device.dart';
 import '../../utils/log.dart';
 import 'components/connection_request_dialog.dart';
+import 'components/content.dart';
 import 'components/exit_dialog.dart';
-import 'components/sender_content.dart';
 import 'start.dart';
 
 class RuiSendPageOptions {
@@ -37,18 +37,6 @@ class RuiSendPageOptions {
   final bool secure;
 }
 
-class RuiSendPage extends StatefulWidget {
-  const RuiSendPage({
-    required this.options,
-    super.key,
-  });
-
-  final RuiSendPageOptions options;
-
-  @override
-  State<RuiSendPage> createState() => _RuiSendPageState();
-}
-
 class RuiSendPageConnectionRequestPair {
   const RuiSendPageConnectionRequestPair({
     required this.address,
@@ -59,6 +47,18 @@ class RuiSendPageConnectionRequestPair {
   final RemitConnectionAddress address;
   final RemitReceiverBasicInfo info;
   final Completer<bool> completer;
+}
+
+class RuiSendPage extends StatefulWidget {
+  const RuiSendPage({
+    required this.options,
+    super.key,
+  });
+
+  final RuiSendPageOptions options;
+
+  @override
+  State<RuiSendPage> createState() => _RuiSendPageState();
 }
 
 class _RuiSendPageState extends State<RuiSendPage> {
@@ -180,7 +180,7 @@ class _RuiSendPageState extends State<RuiSendPage> {
                 ),
                 success:
                     (final BuildContext context, final RemitSender value) =>
-                        RuiSendPageSenderContent(sender: value),
+                        RuiSendPageContent(sender: value),
                 // TODO: handle error
                 failed: (final BuildContext context, final _) =>
                     const SizedBox.shrink(),

@@ -61,7 +61,7 @@ class _RuiHomePageState extends State<RuiHomePage> {
               leading: const RuiIcon(Ionicons.download_outline),
               child: Text(context.t.receive),
             ),
-            onClick: () {},
+            onClick: () => Navigator.of(context).pushNamed(RuiApp.receiveStart),
           ),
           RuiSpacer.verticalCompact,
           RuiButton(

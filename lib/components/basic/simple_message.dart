@@ -9,6 +9,7 @@ class RuiSimpleMessageStyle {
   const RuiSimpleMessageStyle({
     required this.textStyle,
     required this.alignment,
+    required this.textAlign,
     this.padding = defaultPadding,
   });
 
@@ -17,11 +18,13 @@ class RuiSimpleMessageStyle {
     final TextStyle? textStyle,
     final EdgeInsets? padding,
     final Alignment? alignment,
+    final TextAlign? textAlign,
   }) =>
       RuiSimpleMessageStyle(
         textStyle: textStyle ?? DefaultTextStyle.of(context).style,
         padding: padding ?? defaultPadding,
         alignment: alignment ?? Alignment.centerLeft,
+        textAlign: textAlign ?? TextAlign.left,
       );
 
   factory RuiSimpleMessageStyle.dimmed(
@@ -29,6 +32,7 @@ class RuiSimpleMessageStyle {
     final TextStyle? textStyle,
     final EdgeInsets? padding,
     final Alignment? alignment,
+    final TextAlign? textAlign,
   }) {
     final RuiColorScheme colorScheme = RuiTheme.colorSchemeOf(context);
     final TextStyle nTextStyle =
@@ -37,12 +41,14 @@ class RuiSimpleMessageStyle {
       textStyle: nTextStyle.copyWith(color: colorScheme.dimmed),
       padding: padding ?? defaultPadding,
       alignment: alignment ?? Alignment.center,
+      textAlign: textAlign ?? TextAlign.center,
     );
   }
 
   final EdgeInsets padding;
   final Alignment alignment;
   final TextStyle textStyle;
+  final TextAlign textAlign;
 
   static const EdgeInsets defaultPadding =
       EdgeInsets.symmetric(vertical: RuiSpacer.cozyPx);
@@ -60,8 +66,8 @@ class RuiSimpleMessage extends StatelessWidget {
     required final TextSpan text,
     required this.style,
     super.key,
-  }) : child = RichText(
-          text: TextSpan(
+  }) : child = Text.rich(
+          TextSpan(
             children: <InlineSpan>[
               WidgetSpan(child: RuiIcon(icon, color: style.textStyle.color)),
               const TextSpan(text: ' '),
@@ -69,6 +75,7 @@ class RuiSimpleMessage extends StatelessWidget {
             ],
             style: style.textStyle,
           ),
+          textAlign: style.textAlign,
         );
 
   RuiSimpleMessage.loading({
@@ -80,7 +87,11 @@ class RuiSimpleMessage extends StatelessWidget {
           children: <Widget>[
             const _RuiLoadingIndicator(),
             RuiSpacer.horizontalCompact,
-            DefaultTextStyle(style: style.textStyle, child: text),
+            DefaultTextStyle(
+              style: style.textStyle,
+              textAlign: style.textAlign,
+              child: text,
+            ),
           ],
         );
 
