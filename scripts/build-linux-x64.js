@@ -27,7 +27,10 @@ const start = async () => {
     await fs.ensureDir(outputArtifactsDir);
     await createTarGz(inputDir, outputTarPath);
     log.success(__script, `packed into ${outputTarPath}`);
-    const outputZipPath = p.join(outputArtifactsDir, `linux-x64.zip`);
+    const outputZipPath = p.join(
+        outputArtifactsDir,
+        `remit-v${version}-linux-x64.zip`
+    );
     await createZip(inputDir, outputZipPath);
     log.success(__script, `packed into ${outputZipPath}`);
 };

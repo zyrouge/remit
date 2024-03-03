@@ -34,7 +34,7 @@ async function updateVersion(versionName, versionCode) {
  */
 function stringifyVersion(versionName, versionCode) {
     if (versionCode === 0) return versionName;
-    return `${versionName}+${versionCode}`;
+    return `${versionName}+${versionCode}-stable`;
 }
 
 module.exports = {
