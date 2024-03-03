@@ -37,7 +37,7 @@ jobs:
             - name: 🚀 Upload artifacts
               uses: ncipollo/release-action@v1
               with:
-                  tag: ${{ steps.version.outputs.version }}
+                  tag: v${{ steps.version.outputs.version }}
                   artifacts: ${{ env.OUTPUT_ARTIFACTS_DIR }}/*
                   generateReleaseNotes: true
                   draft: true
