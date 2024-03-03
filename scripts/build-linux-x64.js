@@ -8,6 +8,7 @@ const {
     createZip,
     log,
 } = require("./_utils");
+const { stringifyVersion, parseVersion } = require("./_version");
 
 const __script = "build-linux-x64";
 
@@ -18,7 +19,11 @@ const start = async () => {
     });
     log.success(__script, "build finished");
     const inputDir = p.join(rootDir, "build/linux/x64/release/bundle");
-    const outputTarPath = p.join(outputArtifactsDir, `linux-x64.tar.gz`);
+    const version = stringifyVersion(await parseVersion());
+    const outputTarPath = p.join(
+        outputArtifactsDir,
+        `remit-v${version}-linux-x64.tar.gz`
+    );
     await fs.ensureDir(outputArtifactsDir);
     await createTarGz(inputDir, outputTarPath);
     log.success(__script, `packed into ${outputTarPath}`);
