@@ -192,3 +192,15 @@ description = "Couldn't establish connection. Invalid credentials?"
 [[keys]]
 name = "Connecting"
 description = "Connecting..."
+
+[[keys]]
+name = "DownloadSelected"
+description = "Download selected"
+
+[[keys]]
+name = "DownloadAll"
+description = "Download all"
+
+[[keys]]
+name = "NoFilesAreBeingShared"
+description = "No files are being shared."

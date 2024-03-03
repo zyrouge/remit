@@ -1,8 +1,5 @@
-import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:remit/exports.dart';
 import '../../../components/advanced/async_result_builder.dart';
 import '../../../components/advanced/explorer/explorer.dart';
@@ -14,6 +11,7 @@ import '../../../components/basic/simple_message.dart';
 import '../../../components/basic/spacer.dart';
 import '../../../components/localized.dart';
 import '../../../components/theme/theme.dart';
+import '../../../services/filesystem/file_saver.dart';
 import '../../../utils/async_result.dart';
 import '../../../utils/extensions.dart';
 
@@ -70,20 +68,51 @@ class _RuiReceivePageContentState extends State<RuiReceivePageContent> {
     final List<String> parts,
     final RemitFileStaticData file,
   ) async {
-    print('${parts.join('/')}/${file.basename}');
     final Stream<List<int>> stream =
         await receiver.connection.filesystemRead(file.basename);
-    final dir = await path_provider.getDownloadsDirectory();
-    await File(path.join(dir!.absolute.path, file.basename))
-        .openWrite()
-        .addStream(stream);
+    await RuiFileSaver.saveFile(file.basename, stream, (final int progress) {
+      print('$progress / ${file.size} (${(progress / file.size) * 100})');
+    });
     print('done');
   }
 
-  Future<void> downloadSelected() async {
+  Future<void> downloadFolder(
+    final List<String> parts,
+    final RemitFolderStaticData folder,
+  ) async {
+    final RemitFilesystemStaticDataPairs pairs =
+        await receiver.connection.filesystemList(folder.basename);
+    final List<String> nParts = parts.toList()..add(folder.basename);
+    for (final RemitFolderStaticData x in pairs.folders) {
+      await downloadFolder(nParts, x);
+    }
+    for (final RemitFileStaticData x in pairs.files) {
+      await downloadFile(nParts, x);
+    }
+  }
+
+  Future<void> downloadPaired({
+    required final List<RemitFolderStaticData> folders,
+    required final List<RemitFileStaticData> files,
+  }) async {
+    for (final RemitFolderStaticData x in selectedFolders) {
+      await downloadFolder(paths, x);
+    }
     for (final RemitFileStaticData x in selectedFiles) {
       await downloadFile(paths, x);
     }
+  }
+
+  Future<void> downloadSelected() => downloadPaired(
+        folders: selectedFolders.toList(),
+        files: selectedFiles.toList(),
+      );
+
+  Future<void> downloadAll() async {
+    final RemitFilesystemStaticDataPairs? pairs =
+        entities.asSuccessOrNull?.value;
+    if (pairs == null) return;
+    return downloadPaired(folders: pairs.folders, files: pairs.files);
   }
 
   void toggleFileSelect(final RemitFileStaticData file) {
@@ -156,17 +185,18 @@ class _RuiReceivePageContentState extends State<RuiReceivePageContent> {
                 onClick: downloadSelected,
                 child: RuiHorizontalContent(
                   leading: const RuiIcon(Ionicons.download_outline),
-                  child: Text('download selected'),
+                  child: Text(context.t.downloadSelected),
                 ),
               ),
             ),
             RuiSpacer.horizontalCompact,
             RuiButton(
+              enabled: entities.asSuccessOrNull?.value.isNotEmpty ?? false,
               style: RuiButtonStyle.outlined(),
-              onClick: () {},
+              onClick: downloadAll,
               child: RuiHorizontalContent(
                 leading: const RuiIcon(Ionicons.file_tray_stacked_outline),
-                child: Text('Download all'),
+                child: Text(context.t.downloadAll),
               ),
             ),
           ],
@@ -187,7 +217,7 @@ class _RuiReceivePageContentState extends State<RuiReceivePageContent> {
             if (value.files.isEmpty && value.folders.isEmpty) {
               return RuiSimpleMessage.icon(
                 icon: Ionicons.documents_outline,
-                text: TextSpan(text: context.t.thisIsEmptyMaybeAddSomeFiles),
+                text: TextSpan(text: context.t.noFilesAreBeingShared),
                 style: RuiSimpleMessageStyle.dimmed(
                   context,
                   padding: EdgeInsets.only(

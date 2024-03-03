@@ -31,3 +31,4 @@ app.*.map.json
 node_modules
 lib/services/translations/*_part.dart
 assets/i18n
+output-artifacts
