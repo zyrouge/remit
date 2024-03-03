@@ -1,4 +1,4 @@
-const { parseVersion, updateVersion } = require("./_version");
+const { parseVersion, updateVersion, stringifyVersion } = require("./_version");
 
 const start = async () => {
     const oldVersion = await parseVersion();
@@ -10,7 +10,7 @@ const start = async () => {
     const versionCode =
         oldVersion.name === versionName ? oldVersion.code + 1 : 0;
     await updateVersion(versionName, versionCode);
-    console.log(`${versionName}+${versionCode}`);
+    console.log(stringifyVersion(versionName, versionCode));
 };
 
 start();

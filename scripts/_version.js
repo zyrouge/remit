@@ -16,18 +16,29 @@ async function parseVersion() {
 
 /**
  * @param {string} versionName
- * @param {string} versionCode
+ * @param {number} versionCode
  */
 async function updateVersion(versionName, versionCode) {
     const content = await fs.readFile(pubspecYamlPath, "utf-8");
     const nContent = content.replace(
         versionRegex,
-        `version: ${versionName}+${versionCode}`
+        `version: ${stringifyVersion(versionName, versionCode)}`
     );
     await fs.writeFile(pubspecYamlPath, nContent);
+}
+
+/**
+ * @param {string} versionName
+ * @param {number} versionCode
+ * @returns {string}
+ */
+function stringifyVersion(versionName, versionCode) {
+    if (versionCode === 0) return versionName;
+    return `${versionName}+${versionCode}`;
 }
 
 module.exports = {
     parseVersion,
     updateVersion,
+    stringifyVersion,
 };
