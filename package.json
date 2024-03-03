@@ -8,6 +8,7 @@
         "i18n:build": "phrasey build -p ./.phrasey/config.toml -f toml",
         "build_runner": "dart run build_runner build",
         "linux:build:x64": "npm run i18n:build && npm run build_runner && node ./scripts/build-linux-x64.js",
+        "version:print": "node ./scripts/version-print.js",
         "version:print-name": "node ./scripts/version-print-name.js",
         "version:print-code": "node ./scripts/version-print-code.js",
         "version:bump": "node ./scripts/version-bump.js"

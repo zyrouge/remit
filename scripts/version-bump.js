@@ -8,7 +8,7 @@ const start = async () => {
     const date = now.getDate();
     const versionName = `${year}.${month}.${date}`;
     const versionCode =
-        oldVersion.name === versionName ? parseInt(oldVersion.code) + 1 : 0;
+        oldVersion.name === versionName ? oldVersion.code + 1 : 0;
     await updateVersion(versionName, versionCode);
     console.log(`${versionName}+${versionCode}`);
 };

@@ -6,12 +6,12 @@ const pubspecYamlPath = p.join(rootDir, "pubspec.yaml");
 const versionRegex = /version:\s*(\d+\.\d+\.\d+)\+(\d+)/;
 
 /**
- * @returns {Promise<{ name: string, code: string }>}
+ * @returns {Promise<{ name: string, code: number }>}
  */
 async function parseVersion() {
     const content = await fs.readFile(pubspecYamlPath, "utf-8");
     const match = content.match(versionRegex);
-    return { name: match[1], code: match[2] };
+    return { name: match[1], code: parseInt(match[2]) };
 }
 
 /**
