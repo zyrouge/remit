@@ -7,7 +7,7 @@
         "i18n:watch": "phrasey watch -p ./.phrasey/config.toml -f toml",
         "i18n:build": "phrasey build -p ./.phrasey/config.toml -f toml",
         "build_runner": "dart run build_runner build",
-        "linux:build:x64": "npm run i18n:build && node ./scripts/build-linux-x64.js"
+        "linux:build:x64": "npm run i18n:build && npm run build_runner && node ./scripts/build-linux-x64.js"
     },
     "repository": "https://github.com/zyrouge/remit.git",
     "author": "Zyrouge",
