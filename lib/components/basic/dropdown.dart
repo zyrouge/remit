@@ -5,6 +5,7 @@ import '../theme/animation_durations.dart';
 import '../theme/theme.dart';
 import 'button.dart';
 import 'icon.dart';
+import 'modal_barrier.dart';
 import 'spacer.dart';
 
 class RuiDropdown<T> extends StatefulWidget {
@@ -61,9 +62,7 @@ class _RuiDropdownState<T> extends State<RuiDropdown<T>>
             controller: overlayController,
             overlayChildBuilder: (final BuildContext context) => Stack(
               children: <Widget>[
-                Positioned.fill(
-                  child: ModalBarrier(onDismiss: togglePopup),
-                ),
+                Positioned.fill(child: RuiModalBarrier(onDismiss: togglePopup)),
                 CompositedTransformFollower(
                   link: layerLink,
                   targetAnchor: Alignment.bottomLeft,

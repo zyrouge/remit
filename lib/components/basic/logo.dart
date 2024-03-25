@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../services/assets.dart';
-import '../theme/colors.dart';
 
 class RuiLogo extends StatelessWidget {
   const RuiLogo({
@@ -19,9 +18,7 @@ class RuiLogo extends StatelessWidget {
         width: size,
         height: size,
         theme: SvgTheme(
-          currentColor: color ??
-              DefaultTextStyle.of(context).style.color ??
-              RuiColors.black,
+          currentColor: color ?? DefaultTextStyle.of(context).style.color!,
         ),
       );
 }

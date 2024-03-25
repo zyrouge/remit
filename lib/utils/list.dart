@@ -17,4 +17,11 @@ extension RuiListUtils<T> on List<T> {
       <K, V>{for (final T x in this) keySelector(x): valueTransform(x)};
 
   T random() => this[ruiRandom.nextInt(length)];
+
+  T? firstWhereOrNull(final bool Function(T) matcher) {
+    for (final T x in this) {
+      if (matcher(x)) return x;
+    }
+    return null;
+  }
 }

@@ -11,17 +11,21 @@ import '../../../components/basic/simple_message.dart';
 import '../../../components/basic/spacer.dart';
 import '../../../components/localized.dart';
 import '../../../components/theme/theme.dart';
-import '../../../services/filesystem/file_saver.dart';
 import '../../../utils/async_result.dart';
 import '../../../utils/extensions.dart';
+import 'queue_dialog.dart';
 
 class RuiReceivePageContent extends StatefulWidget {
   const RuiReceivePageContent({
     required this.receiver,
+    required this.queue,
+    required this.toggleQueueDialog,
     super.key,
   });
 
   final RemitReceiver receiver;
+  final RuiReceiverDownloadQueue queue;
+  final VoidCallback toggleQueueDialog;
 
   @override
   State<RuiReceivePageContent> createState() => _RuiReceivePageContentState();
@@ -64,46 +68,8 @@ class _RuiReceivePageContentState extends State<RuiReceivePageContent> {
 
   Future<void> popPath() => updatePath(paths.sublist(0, paths.length - 1));
 
-  Future<void> downloadFile(
-    final List<String> parts,
-    final RemitFileStaticData file,
-  ) async {
-    final Stream<List<int>> stream =
-        await receiver.connection.filesystemRead(file.basename);
-    await RuiFileSaver.saveFile(file.basename, stream, (final int progress) {
-      print('$progress / ${file.size} (${(progress / file.size) * 100})');
-    });
-    print('done');
-  }
-
-  Future<void> downloadFolder(
-    final List<String> parts,
-    final RemitFolderStaticData folder,
-  ) async {
-    final RemitFilesystemStaticDataPairs pairs =
-        await receiver.connection.filesystemList(folder.basename);
-    final List<String> nParts = parts.toList()..add(folder.basename);
-    for (final RemitFolderStaticData x in pairs.folders) {
-      await downloadFolder(nParts, x);
-    }
-    for (final RemitFileStaticData x in pairs.files) {
-      await downloadFile(nParts, x);
-    }
-  }
-
-  Future<void> downloadPaired({
-    required final List<RemitFolderStaticData> folders,
-    required final List<RemitFileStaticData> files,
-  }) async {
-    for (final RemitFolderStaticData x in selectedFolders) {
-      await downloadFolder(paths, x);
-    }
-    for (final RemitFileStaticData x in selectedFiles) {
-      await downloadFile(paths, x);
-    }
-  }
-
-  Future<void> downloadSelected() => downloadPaired(
+  Future<void> downloadSelected() => widget.queue.addToQueue(
+        parts: paths,
         folders: selectedFolders.toList(),
         files: selectedFiles.toList(),
       );
@@ -112,7 +78,11 @@ class _RuiReceivePageContentState extends State<RuiReceivePageContent> {
     final RemitFilesystemStaticDataPairs? pairs =
         entities.asSuccessOrNull?.value;
     if (pairs == null) return;
-    return downloadPaired(folders: pairs.folders, files: pairs.files);
+    await widget.queue.addToQueue(
+      parts: paths,
+      folders: pairs.folders.toList(),
+      files: pairs.files.toList(),
+    );
   }
 
   void toggleFileSelect(final RemitFileStaticData file) {
@@ -197,6 +167,15 @@ class _RuiReceivePageContentState extends State<RuiReceivePageContent> {
               child: RuiHorizontalContent(
                 leading: const RuiIcon(Ionicons.file_tray_stacked_outline),
                 child: Text(context.t.downloadAll),
+              ),
+            ),
+            const Expanded(child: SizedBox.shrink()),
+            RuiButton(
+              style: RuiButtonStyle.surface(),
+              onClick: widget.toggleQueueDialog,
+              child: RuiHorizontalContent(
+                leading: const RuiIcon(Ionicons.list),
+                child: Text(context.t.queue),
               ),
             ),
           ],

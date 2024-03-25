@@ -118,6 +118,9 @@ class _RuiReceiveStartPageState extends State<RuiReceiveStartPage> {
         RuiApp.receive,
         arguments: RuiReceivePageOptions(receiver: receiver),
       );
+      setState(() {
+        isConnecting = false;
+      });
     } catch (error) {
       if (!mounted) return;
       log.error('RemitReceiveStartPage', error.toString());

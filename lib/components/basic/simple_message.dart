@@ -95,6 +95,16 @@ class RuiSimpleMessage extends StatelessWidget {
           ],
         );
 
+  RuiSimpleMessage.text({
+    required final String text,
+    required this.style,
+    super.key,
+  }) : child = Text(
+          text,
+          style: style.textStyle,
+          textAlign: style.textAlign,
+        );
+
   final Widget child;
   final RuiSimpleMessageStyle style;
 

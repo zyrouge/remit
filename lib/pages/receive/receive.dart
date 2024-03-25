@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:remit/exports.dart';
 import '../../components/animations/fade_scale_transition2.dart';
 import '../../components/basic/back_button.dart';
+import '../../components/basic/modal_barrier.dart';
 import '../../components/basic/scaffold.dart';
 import '../../components/basic/spacer.dart';
 import '../../components/localized.dart';
@@ -10,6 +11,7 @@ import '../../components/theme/responsivity.dart';
 import '../../components/theme/theme.dart';
 import 'components/content.dart';
 import 'components/exit_dialog.dart';
+import 'components/queue_dialog.dart';
 
 class RuiReceivePageOptions {
   const RuiReceivePageOptions({
@@ -32,8 +34,17 @@ class RuiReceivePage extends StatefulWidget {
 }
 
 class _RuiReceivePageState extends State<RuiReceivePage> {
-  bool showBackDialog = false;
+  late final RuiReceiverDownloadQueue queue;
+
+  // -1 - none, 0 - exit, 1 - queue
+  int showDialog = -1;
   bool canPop = false;
+
+  @override
+  void initState() {
+    super.initState();
+    queue = RuiReceiverDownloadQueue(widget.options.receiver);
+  }
 
   @override
   void dispose() {
@@ -52,9 +63,9 @@ class _RuiReceivePageState extends State<RuiReceivePage> {
           Navigator.of(context).pop();
           return;
         }
-        if (!showBackDialog) {
+        if (showDialog != 0) {
           setState(() {
-            showBackDialog = true;
+            showDialog = 0;
           });
         }
       },
@@ -68,13 +79,29 @@ class _RuiReceivePageState extends State<RuiReceivePage> {
               onClick: () => Navigator.of(context).maybePop(),
             ),
             RuiSpacer.verticalCozy,
-            Text(context.t.send, style: theme.textTheme.display),
+            Text(context.t.receive, style: theme.textTheme.display),
             RuiSpacer.verticalCozy,
-            RuiReceivePageContent(receiver: receiver),
+            RuiReceivePageContent(
+              receiver: receiver,
+              queue: queue,
+              toggleQueueDialog: () {
+                setState(() {
+                  showDialog = showDialog == 1 ? -1 : 1;
+                });
+              },
+            ),
             RuiSpacer.verticalCozy,
           ],
         ),
         overlays: <Widget>[
+          Positioned.fill(
+            child: AnimatedSwitcher(
+              duration: RuiAnimationDurations.fastest,
+              child: showDialog != -1
+                  ? RuiModalBarrier(onDismiss: onDialogDismiss)
+                  : null,
+            ),
+          ),
           AnimatedSwitcher(
             duration: RuiAnimationDurations.normal,
             transitionBuilder: (
@@ -86,27 +113,44 @@ class _RuiReceivePageState extends State<RuiReceivePage> {
               alignment: Alignment.topCenter,
               child: child,
             ),
-            child: showBackDialog
-                ? RuiSendPageExitDialog(shouldExit: onExit)
+            child: showDialog == 0
+                ? RuiReceivePageExitDialog(onDismiss: onExitDialogDismiss)
                 : null,
+          ),
+          AnimatedSwitcher(
+            duration: RuiAnimationDurations.normal,
+            transitionBuilder: (
+              final Widget child,
+              final Animation<double> animation,
+            ) =>
+                FadeScaleTransition2(
+              animation: animation,
+              alignment: Alignment.topCenter,
+              child: child,
+            ),
+            child: showDialog == 1 ? RuiReceivePageQueue(queue: queue) : null,
           ),
         ],
       ),
     );
   }
 
-  void onExit(final bool exit) {
+  void onExitDialogDismiss(final bool exit) {
     if (exit) {
       setState(() {
-        showBackDialog = false;
+        showDialog = -1;
         canPop = true;
       });
       Navigator.of(context).maybePop();
-    } else {
-      setState(() {
-        showBackDialog = false;
-      });
+      return;
     }
+    onDialogDismiss();
+  }
+
+  void onDialogDismiss() {
+    setState(() {
+      showDialog = -1;
+    });
   }
 
   RemitReceiver get receiver => widget.options.receiver;

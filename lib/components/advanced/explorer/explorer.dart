@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:remit/exports.dart';
+import '../../../utils/others.dart';
 import '../../basic/button.dart';
 import '../../basic/horizontal_content.dart';
 import '../../basic/icon.dart';
@@ -40,7 +41,7 @@ class RuiExplorer extends StatelessWidget {
             for (final RuiExplorerItem<RemitFileStaticData> x in files)
               _RuiExplorerListItem(
                 name: x.value.basename,
-                label: bytesToString(context, x.value.size),
+                label: bytesToString(context.t, x.value.size),
                 icon: Ionicons.document,
                 selected: x.selected,
                 onSelect: x.onSelect,
@@ -57,19 +58,6 @@ class RuiExplorer extends StatelessWidget {
           ],
         ),
       );
-
-  String bytesToString(final BuildContext context, final int bytes) {
-    final double kb = bytes / 1024;
-    if (kb < 1000) {
-      return context.t.xKb(kb.toStringAsFixed(1));
-    }
-    final double mb = kb / 1024;
-    if (mb < 1000) {
-      return context.t.xMb(mb.toStringAsFixed(2));
-    }
-    final double gb = mb / 1024;
-    return context.t.xGb(gb.toStringAsFixed(2));
-  }
 }
 
 class _RuiExplorerListItem extends StatelessWidget {
@@ -92,7 +80,6 @@ class _RuiExplorerListItem extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final RuiTheme theme = RuiTheme.of(context);
-    final Color textColor = DefaultTextStyle.of(context).style.color!;
     return RuiButton(
       style: RuiButtonStyle.text(
         padding: RuiButtonStyle.defaultPadding.copyWith(left: 0),
@@ -128,7 +115,9 @@ class _RuiExplorerListItem extends StatelessWidget {
                         ? RuiIcon(
                             Ionicons.checkmark_outline,
                             size: 8,
-                            color: textColor,
+                            color: selected
+                                ? theme.colorScheme.onPrimary
+                                : theme.colorScheme.onBackgroundVariant,
                           )
                         : null,
                   ),

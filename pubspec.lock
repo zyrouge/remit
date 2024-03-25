@@ -173,10 +173,10 @@ packages:
     dependency: transitive
     description:
       name: dart_style
-      sha256: "40ae61a5d43feea6d24bd22c0537a6629db858963b99b4bc1c3db80676f32368"
+      sha256: "99e066ce75c89d6b29903d788a7bb9369cf754f7b24bf70bf4b6d6d6b26853b9"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.4"
+    version: "2.3.6"
   device_info_plus:
     dependency: "direct main"
     description:
@@ -447,10 +447,10 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: d584fa6707a52763a52446f02cc621b077888fb63b93bbcb1143a7be5a0c0c04
+      sha256: "7687075e408b093f36e6bbf6c91878cc0d4cd10f409506f7bc996f68220b9136"
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.0"
+    version: "1.12.0"
   mime:
     dependency: transitive
     description:
@@ -583,10 +583,10 @@ packages:
     dependency: "direct main"
     description:
       name: provider
-      sha256: "9a96a0a19b594dbc5bf0f1f27d2bc67d5f95957359b461cd9feb44ed6ae75096"
+      sha256: c8a055ee5ce3fd98d6fc872478b03823ffdb448699c6ebdbbc71d59b596fd48c
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.1"
+    version: "6.1.2"
   pub_semver:
     dependency: transitive
     description:
@@ -608,7 +608,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "61c36798ae3f4485a375307b956dea8fcc1849a1"
+      resolved-ref: a4d75b6b56248fda5aec58d260595527f34d9e81
       url: "https://github.com/zyrouge/dart_remit.git"
     source: git
     version: "0.0.0"
@@ -773,10 +773,10 @@ packages:
     dependency: transitive
     description:
       name: web
-      sha256: "1d9158c616048c38f712a6646e317a3426da10e884447626167240d45209cbad"
+      sha256: "97da13628db363c635202ad97068d47c5b8aa555808e7a9411963c533b449b27"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "0.5.1"
   web_socket_channel:
     dependency: transitive
     description:
@@ -789,10 +789,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "464f5674532865248444b4c3daca12bd9bf2d7c47f759ce2617986e7229494a8"
+      sha256: "8cb58b45c47dcb42ab3651533626161d6b67a2921917d8d429791f76972b3480"
       url: "https://pub.dev"
     source: hosted
-    version: "5.2.0"
+    version: "5.3.0"
   win32_registry:
     dependency: transitive
     description:

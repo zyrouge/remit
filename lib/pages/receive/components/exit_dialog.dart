@@ -4,12 +4,12 @@ import '../../../components/basic/dialog_box.dart';
 import '../../../components/basic/spacer.dart';
 import '../../../components/localized.dart';
 
-class RuiSendPageExitDialog extends StatelessWidget {
-  const RuiSendPageExitDialog({
-    required this.shouldExit,
+class RuiReceivePageExitDialog extends StatelessWidget {
+  const RuiReceivePageExitDialog({
+    required this.onDismiss,
   });
 
-  final void Function(bool) shouldExit;
+  final void Function(bool) onDismiss;
 
   @override
   Widget build(final BuildContext context) => RuiDialogBox(
@@ -20,7 +20,7 @@ class RuiSendPageExitDialog extends StatelessWidget {
           Expanded(
             child: RuiButton(
               style: RuiButtonStyle.outlined(),
-              onClick: () => shouldExit(false),
+              onClick: () => onDismiss(false),
               child: Text(context.t.cancel),
             ),
           ),
@@ -28,7 +28,7 @@ class RuiSendPageExitDialog extends StatelessWidget {
           Expanded(
             child: RuiButton(
               style: RuiButtonStyle.error(),
-              onClick: () => shouldExit(true),
+              onClick: () => onDismiss(true),
               child: Text(context.t.exit),
             ),
           ),

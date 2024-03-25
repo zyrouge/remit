@@ -4,9 +4,13 @@ import 'package:file_selector/file_selector.dart' as fs;
 import 'package:remit/exports.dart';
 
 class RuiPickedFile extends RemitFile {
-  RuiPickedFile(this._file);
+  RuiPickedFile(
+    this._file, {
+    this.displayName,
+  });
 
   final fs.XFile _file;
+  final String? displayName;
 
   @override
   Stream<List<int>> openRead([final int? start, final int? end]) {
@@ -25,7 +29,7 @@ class RuiPickedFile extends RemitFile {
   Future<int> size() => _file.length();
 
   @override
-  String get basename => _file.name;
+  String get basename => displayName ?? _file.name;
 }
 
 abstract class RuiFilePicker {

@@ -6,6 +6,7 @@ import '../../components/animations/animated_switcher_layout.dart';
 import '../../components/animations/cross_fade_transition.dart';
 import '../../components/animations/fade_scale_transition2.dart';
 import '../../components/basic/back_button.dart';
+import '../../components/basic/modal_barrier.dart';
 import '../../components/basic/scaffold.dart';
 import '../../components/basic/simple_message.dart';
 import '../../components/basic/spacer.dart';
@@ -194,18 +195,7 @@ class _RuiSendPageState extends State<RuiSendPage> {
             child: AnimatedSwitcher(
               duration: RuiAnimationDurations.fastest,
               child: showBackDialog || requests.isNotEmpty
-                  ? ModalBarrier(
-                      dismissible: showBackDialog,
-                      onDismiss: () {
-                        if (showBackDialog) {
-                          setState(() {
-                            showBackDialog = false;
-                          });
-                        }
-                      },
-                      color:
-                          theme.colorScheme.backgroundVariant.withOpacity(0.25),
-                    )
+                  ? RuiModalBarrier(onDismiss: onDialogDismiss)
                   : null,
             ),
           ),
@@ -221,7 +211,7 @@ class _RuiSendPageState extends State<RuiSendPage> {
               child: child,
             ),
             child: showBackDialog
-                ? RuiSendPageExitDialog(shouldExit: onExit)
+                ? RuiSendPageExitDialog(shouldExit: onExitDialogDismiss)
                 : requests.isNotEmpty
                     ? RuiSendPageConnectionRequestDialog(pair: requests.first)
                     : null,
@@ -231,17 +221,21 @@ class _RuiSendPageState extends State<RuiSendPage> {
     );
   }
 
-  void onExit(final bool exit) {
+  void onExitDialogDismiss(final bool exit) {
     if (exit) {
       setState(() {
         showBackDialog = false;
         canPop = true;
       });
       Navigator.of(context).maybePop();
-    } else {
-      setState(() {
-        showBackDialog = false;
-      });
+      return;
     }
+    onDialogDismiss();
+  }
+
+  void onDialogDismiss() {
+    setState(() {
+      showBackDialog = false;
+    });
   }
 }

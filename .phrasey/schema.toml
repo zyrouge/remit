@@ -204,3 +204,11 @@ description = "Download all"
 [[keys]]
 name = "NoFilesAreBeingShared"
 description = "No files are being shared."
+
+[[keys]]
+name = "Queue"
+description = "Queue"
+
+[[keys]]
+name = "NoFilesAreBeingDownloaded"
+description = "No files are being downloaded."
