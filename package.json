@@ -11,8 +11,6 @@
         "windows:build:x64": "node ./scripts/build-windows-x64.js",
         "linux:build:x64": "node ./scripts/build-linux-x64.js",
         "version:print": "node ./scripts/version-print.js",
-        "version:print-name": "node ./scripts/version-print-name.js",
-        "version:print-code": "node ./scripts/version-print-code.js",
         "version:bump": "node ./scripts/version-bump.js"
     },
     "repository": "https://github.com/zyrouge/remit.git",
@@ -25,5 +23,8 @@
         "archiver": "^7.0.0",
         "cross-spawn": "^7.0.3",
         "phrasey": "^2.0.26"
+    },
+    "dependencies": {
+        "@zyrouge/zemver": "^0.0.1"
     }
 }

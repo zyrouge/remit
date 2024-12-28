@@ -1,8 +1,8 @@
-const { parseVersion, stringifyVersion } = require("./_version");
+const { parseVersion } = require("./_version");
 
 const start = async () => {
     const version = await parseVersion();
-    console.log(stringifyVersion(version.name, version.code));
+    console.log(version.toString());
 };
 
 start();

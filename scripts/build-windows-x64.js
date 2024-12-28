@@ -8,7 +8,7 @@ const {
     createZip,
     log,
 } = require("./_utils");
-const { stringifyVersion, parseVersion } = require("./_version");
+const { parseVersion } = require("./_version");
 
 const __script = "build-windows-x64";
 
@@ -19,7 +19,7 @@ const start = async () => {
     });
     log.success(__script, "build finished");
     const inputDir = p.join(rootDir, "build/windows/x64/runner/Release");
-    const version = (await parseVersion()).name;
+    const version = (await parseVersion()).toString();
     const outputTarPath = p.join(
         outputArtifactsDir,
         `remit-v${version}-windows-x64.tar.gz`
