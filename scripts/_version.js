@@ -3,7 +3,7 @@ const fs = require("fs-extra");
 const { rootDir } = require("./_utils");
 
 const pubspecYamlPath = p.join(rootDir, "pubspec.yaml");
-const versionRegex = /version:\s*(\d+\.\d+\.\d+)\+(\d+)/;
+const versionRegex = /version:\s*(\d+\.\d+\.(\d+)(?:\-\w+)?(?:\+\w+)?)/;
 
 /**
  * @returns {Promise<{ name: string, code: number }>}

@@ -19,7 +19,7 @@ const start = async () => {
     });
     log.success(__script, "build finished");
     const inputDir = p.join(rootDir, "build/windows/x64/runner/Release");
-    const version = stringifyVersion(await parseVersion());
+    const version = (await parseVersion()).name;
     const outputTarPath = p.join(
         outputArtifactsDir,
         `remit-v${version}-windows-x64.tar.gz`
