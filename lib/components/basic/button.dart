@@ -216,10 +216,18 @@ class _RuiButtonState extends State<RuiButton> {
   bool isFocused = false;
 
   RuiInteractiveState toInteractiveState() {
-    if (!widget.enabled) return RuiInteractiveState.disabled;
-    if (widget.active) return RuiInteractiveState.active;
-    if (isFocused) return RuiInteractiveState.active;
-    if (isHovered) return RuiInteractiveState.hovered;
+    if (!widget.enabled) {
+      return RuiInteractiveState.disabled;
+    }
+    if (widget.active) {
+      return RuiInteractiveState.active;
+    }
+    if (isFocused) {
+      return RuiInteractiveState.active;
+    }
+    if (isHovered) {
+      return RuiInteractiveState.hovered;
+    }
     return RuiInteractiveState.normal;
   }
 

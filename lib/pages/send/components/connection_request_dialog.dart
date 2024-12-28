@@ -8,9 +8,11 @@ import '../send.dart';
 class RuiSendPageConnectionRequestDialog extends StatelessWidget {
   const RuiSendPageConnectionRequestDialog({
     required this.pair,
+    required this.shouldAccept,
   });
 
   final RuiSendPageConnectionRequestPair pair;
+  final void Function(RuiSendPageConnectionRequestPair, bool) shouldAccept;
 
   @override
   Widget build(final BuildContext context) => RuiDialogBox(
@@ -20,7 +22,7 @@ class RuiSendPageConnectionRequestDialog extends StatelessWidget {
           Expanded(
             child: RuiButton(
               style: RuiButtonStyle.outlined(),
-              onClick: () => pair.completer.complete(false),
+              onClick: () => shouldAccept(pair, false),
               child: Text(context.t.deny),
             ),
           ),
@@ -28,7 +30,7 @@ class RuiSendPageConnectionRequestDialog extends StatelessWidget {
           Expanded(
             child: RuiButton(
               style: RuiButtonStyle.primary(),
-              onClick: () => pair.completer.complete(true),
+              onClick: () => shouldAccept(pair, true),
               child: Text(context.t.accept),
             ),
           ),

@@ -130,9 +130,15 @@ class _RuiTextFieldState extends State<RuiTextField> {
   }
 
   RuiInteractiveState toInteractiveState() {
-    if (!widget.enabled) return RuiInteractiveState.disabled;
-    if (isFocused) return RuiInteractiveState.active;
-    if (isHovered) return RuiInteractiveState.hovered;
+    if (!widget.enabled) {
+      return RuiInteractiveState.disabled;
+    }
+    if (isFocused) {
+      return RuiInteractiveState.active;
+    }
+    if (isHovered) {
+      return RuiInteractiveState.hovered;
+    }
     return RuiInteractiveState.normal;
   }
 

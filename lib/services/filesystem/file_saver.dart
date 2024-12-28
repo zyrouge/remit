@@ -25,7 +25,12 @@ abstract class RuiFileSaver {
       onProgress(progress);
       return x;
     });
-    return outputStream.addStream(nInputStream);
+    try {
+      await outputStream.addStream(nInputStream);
+    } catch (_) {
+    } finally {
+      outputStream.close();
+    }
   }
 
   static Future<String> getDestinationDir() async {

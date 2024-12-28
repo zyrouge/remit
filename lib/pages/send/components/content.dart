@@ -143,6 +143,11 @@ class _RuiSendPageContentState extends State<RuiSendPageContent> {
             ),
             buildLabeledText(
               context,
+              context.t.networkPort,
+              sender.server.port.toString(),
+            ),
+            buildLabeledText(
+              context,
               context.t.inviteCode,
               sender.inviteCode,
             ),

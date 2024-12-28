@@ -9,13 +9,35 @@ class Log extends RemitLogger {
   }
 
   @override
-  void warn(final String tag, final String text) {
+  void warn(
+    final String tag,
+    final String text, [
+    final Object? err,
+    final Object? stackTrace,
+  ]) {
     print('$tag: $text');
+    if (err != null) {
+      print(err);
+    }
+    if (stackTrace != null) {
+      print(stackTrace);
+    }
   }
 
   @override
-  void error(final String tag, final String text) {
+  void error(
+    final String tag,
+    final String text, [
+    final Object? err,
+    final Object? stackTrace,
+  ]) {
     print('$tag: $text');
+    if (err != null) {
+      print(err);
+    }
+    if (stackTrace != null) {
+      print(stackTrace);
+    }
   }
 }
 

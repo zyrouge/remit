@@ -621,7 +621,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: b0fd9801af4963d9c841e45dcb1fa3f85be7ea40
+      resolved-ref: "01d4bc2f482a528999f889573ccf1ea9353da288"
       url: "https://github.com/zyrouge/dart_remit.git"
     source: git
     version: "0.0.0"

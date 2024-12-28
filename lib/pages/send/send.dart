@@ -213,12 +213,26 @@ class _RuiSendPageState extends State<RuiSendPage> {
             child: showBackDialog
                 ? RuiSendPageExitDialog(shouldExit: onExitDialogDismiss)
                 : requests.isNotEmpty
-                    ? RuiSendPageConnectionRequestDialog(pair: requests.first)
+                    ? RuiSendPageConnectionRequestDialog(
+                        pair: requests.first,
+                        shouldAccept: onConnectionRequestDialogDismiss,
+                      )
                     : null,
           ),
         ],
       ),
     );
+  }
+
+  void onConnectionRequestDialogDismiss(
+    final RuiSendPageConnectionRequestPair pair,
+    final bool accept,
+  ) {
+    requests.remove(pair);
+    if (!pair.completer.isCompleted) {
+      pair.completer.complete(accept);
+    }
+    onDialogDismiss();
   }
 
   void onExitDialogDismiss(final bool exit) {

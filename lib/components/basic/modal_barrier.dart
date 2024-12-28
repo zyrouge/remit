@@ -17,6 +17,6 @@ class RuiModalBarrier extends StatelessWidget {
         onDismiss: onDismiss,
         color: RuiTheme.colorSchemeOf(context)
             .backgroundVariant
-            .withValues(alpha: 0.25),
+            .withValues(alpha: 0.5),
       );
 }
