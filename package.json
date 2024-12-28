@@ -9,7 +9,7 @@
         "build_runner": "dart run build_runner build",
         "prebuild": "npm run i18n:build && npm run build_runner",
         "build": "npm run prebuild && npm run windows:build:x64 && npm run linux:build:x64",
-        "windows:build:x64": "node ./scripts/windows-linux-x64.js",
+        "windows:build:x64": "node ./scripts/build-windows-x64.js",
         "linux:build:x64": "node ./scripts/build-linux-x64.js",
         "version:print": "node ./scripts/version-print.js",
         "version:print-name": "node ./scripts/version-print-name.js",
