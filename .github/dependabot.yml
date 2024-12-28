@@ -1,0 +1,6 @@
+version: 2
+updates:
+  - package-ecosystem: ""
+    directories: ["/", "packages/**"]
+    schedule:
+      interval: "daily"
