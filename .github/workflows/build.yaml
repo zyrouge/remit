@@ -7,7 +7,7 @@ env:
     OUTPUT_ARTIFACTS_DIR: "./output-artifacts"
 
 jobs:
-    build:
+    build-linux:
         runs-on: ubuntu-latest
         permissions:
             contents: write
@@ -36,7 +36,49 @@ jobs:
               run: echo "version=$(npm run version:print --silent)" >> "$GITHUB_OUTPUT"
 
             - name: 🔨 Build artifacts
-              run: npm run build
+              run: |
+                  npm run prebuild
+                  npm run linux:build:x64
+
+            - name: 🚀 Upload artifacts
+              uses: ncipollo/release-action@v1
+              with:
+                  tag: v${{ steps.version.outputs.version }}
+                  artifacts: ${{ env.OUTPUT_ARTIFACTS_DIR }}/*
+                  generateReleaseNotes: true
+                  draft: true
+                  artifactErrorsFailBuild: true
+
+    build-windows:
+        runs-on: windows-latest
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+
+            - uses: subosito/flutter-action@v2
+              with:
+                  channel: beta
+                  cache: true
+
+            - name: 🚧 Do prerequisites
+              run: |
+                  npm ci
+                  flutter pub get
+
+            - name: 📝 Fetch version
+              id: version
+              run: echo "version=$(npm run version:print --silent)" >> "$GITHUB_OUTPUT"
+
+            - name: 🔨 Build artifacts
+              run: |
+                  npm run prebuild
+                  npm run windows:build:x64
 
             - name: 🚀 Upload artifacts
               uses: ncipollo/release-action@v1
