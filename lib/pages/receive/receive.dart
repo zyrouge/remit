@@ -57,7 +57,7 @@ class _RuiReceivePageState extends State<RuiReceivePage> {
     final RuiTheme theme = RuiTheme.of(context);
     return PopScope(
       canPop: canPop,
-      onPopInvoked: (final bool didPop) {
+      onPopInvokedWithResult: (final bool didPop, final _) {
         if (didPop) return;
         if (canPop) {
           Navigator.of(context).pop();

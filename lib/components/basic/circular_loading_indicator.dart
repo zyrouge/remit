@@ -37,7 +37,7 @@ class RuiCircularLoadingIndicatorStyle {
     final RuiColorScheme colorScheme = RuiTheme.colorSchemeOf(context);
     return RuiCircularLoadingIndicatorStyle(
       foregroundColor: colorScheme.onPrimary,
-      backgroundColor: colorScheme.onPrimary.withOpacity(0.25),
+      backgroundColor: colorScheme.onPrimary.withValues(alpha: 0.25),
       size: size,
       strokeWidth: strokeWidth ?? defaultStrokeWidth,
       duration: duration ?? defaultDuration,

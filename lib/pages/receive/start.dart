@@ -262,7 +262,7 @@ class _RuiReceiveStartPageState extends State<RuiReceiveStartPage> {
               ) {
                 final TextStyle textStyle = DefaultTextStyle.of(context).style;
                 final Color color = isConnecting
-                    ? theme.colorScheme.onPrimaryVariant.withOpacity(0.5)
+                    ? theme.colorScheme.onPrimaryVariant.withValues(alpha: 0.5)
                     : theme.colorScheme
                         .onPrimaryWhenState(state.toThemeState());
                 return textStyle.copyWith(color: color);
@@ -278,9 +278,9 @@ class _RuiReceiveStartPageState extends State<RuiReceiveStartPage> {
                       leading: RuiCircularLoadingIndicator(
                         style: RuiCircularLoadingIndicatorStyle(
                           foregroundColor: theme.colorScheme.onPrimaryVariant
-                              .withOpacity(0.5),
+                              .withValues(alpha: 0.5),
                           backgroundColor: theme.colorScheme.onPrimaryVariant
-                              .withOpacity(0.25),
+                              .withValues(alpha: 0.25),
                           size: DefaultTextStyle.of(context).style.fontSize! *
                               0.9,
                         ),

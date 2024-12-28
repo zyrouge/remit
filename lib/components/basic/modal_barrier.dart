@@ -15,7 +15,8 @@ class RuiModalBarrier extends StatelessWidget {
   Widget build(final BuildContext context) => ModalBarrier(
         dismissible: dismissible,
         onDismiss: onDismiss,
-        color:
-            RuiTheme.colorSchemeOf(context).backgroundVariant.withOpacity(0.25),
+        color: RuiTheme.colorSchemeOf(context)
+            .backgroundVariant
+            .withValues(alpha: 0.25),
       );
 }

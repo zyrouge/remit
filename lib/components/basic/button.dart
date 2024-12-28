@@ -150,7 +150,7 @@ class RuiButtonStyle {
         color: (final BuildContext context, final RuiInteractiveState state) {
           final RuiColorScheme colorScheme = RuiTheme.colorSchemeOf(context);
           if (state == RuiInteractiveState.active) {
-            return colorScheme.backgroundVariant.withOpacity(0.5);
+            return colorScheme.backgroundVariant.withValues(alpha: 0.5);
           }
           return RuiColors.transparent;
         },
