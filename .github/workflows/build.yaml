@@ -36,7 +36,7 @@ jobs:
               run: echo "version=$(npm run version:print --silent)" >> "$GITHUB_OUTPUT"
 
             - name: 🔨 Build artifacts
-              run: npm run linux:build:x64
+              run: npm run build
 
             - name: 🚀 Upload artifacts
               uses: ncipollo/release-action@v1
