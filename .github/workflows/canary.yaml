@@ -1,10 +1,10 @@
-name: Build
+name: Canary
 
 on:
     workflow_dispatch:
 
 env:
-    OUTPUT_ARTIFACTS_DIR: "./output-artifacts"
+    OUTPUT_ARTIFACTS_DIR: ./output-artifacts
 
 jobs:
     build-linux:
@@ -40,14 +40,19 @@ jobs:
                   npm run prebuild
                   npm run linux:build:x64
 
-            - name: 🚀 Upload artifacts
-              uses: ncipollo/release-action@v1
+            - name: 🚀 Upload tar.gz artifact
+              uses: actions/upload-artifact@v4
               with:
-                  tag: v${{ steps.version.outputs.version }}
-                  artifacts: ${{ env.OUTPUT_ARTIFACTS_DIR }}/*
-                  generateReleaseNotes: true
-                  draft: true
-                  artifactErrorsFailBuild: true
+                  name: remit-v${{ steps.version.outputs.version }}-linux-x64-tar-gz
+                  path: ${{ env.OUTPUT_ARTIFACTS_DIR }}/remit-v${{ steps.version.outputs.version }}-linux-x64.tar.gz
+                  if-no-files-found: error
+
+            - name: 🚀 Upload zip artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: remit-v${{ steps.version.outputs.version }}-linux-x64-zip
+                  path: ${{ env.OUTPUT_ARTIFACTS_DIR }}/remit-v${{ steps.version.outputs.version }}-linux-x64.zip
+                  if-no-files-found: error
 
     build-windows:
         runs-on: windows-latest
@@ -73,18 +78,23 @@ jobs:
 
             - name: 📝 Fetch version
               id: version
-              run: echo "version=$(npm run version:print --silent)" >> "$GITHUB_OUTPUT"
+              run: echo "version=$(npm run version:print --silent)" >> $env:GITHUB_OUTPUT
 
             - name: 🔨 Build artifacts
               run: |
                   npm run prebuild
                   npm run windows:build:x64
 
-            - name: 🚀 Upload artifacts
-              uses: ncipollo/release-action@v1
+            - name: 🚀 Upload tar.gz artifact
+              uses: actions/upload-artifact@v4
               with:
-                  tag: v${{ steps.version.outputs.version }}
-                  artifacts: ${{ env.OUTPUT_ARTIFACTS_DIR }}/*
-                  generateReleaseNotes: true
-                  draft: true
-                  artifactErrorsFailBuild: true
+                  name: remit-v${{ steps.version.outputs.version }}-windows-x64-tar-gz
+                  path: ${{ env.OUTPUT_ARTIFACTS_DIR }}/remit-v${{ steps.version.outputs.version }}-windows-x64.tar.gz
+                  if-no-files-found: error
+
+            - name: 🚀 Upload zip artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: remit-v${{ steps.version.outputs.version }}-windows-x64-zip
+                  path: ${{ env.OUTPUT_ARTIFACTS_DIR }}/remit-v${{ steps.version.outputs.version }}-windows-x64.zip
+                  if-no-files-found: error
