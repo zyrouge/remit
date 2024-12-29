@@ -20,11 +20,11 @@
         "@zyrouge/phrasey-json": "^1.0.3",
         "@zyrouge/phrasey-locales": "^1.1.9",
         "@zyrouge/phrasey-toml": "^1.0.3",
-        "archiver": "^7.0.0",
-        "cross-spawn": "^7.0.3",
-        "phrasey": "^2.0.26"
+        "archiver": "^7.0.1",
+        "cross-spawn": "^7.0.6",
+        "phrasey": "^2.0.27"
     },
     "dependencies": {
-        "@zyrouge/zemver": "^0.0.1"
+        "@zyrouge/zemver": "^0.0.2"
     }
 }
