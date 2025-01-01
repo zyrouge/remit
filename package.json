@@ -25,6 +25,6 @@
         "phrasey": "^2.0.27"
     },
     "dependencies": {
-        "@zyrouge/zemver": "^0.0.2"
+        "@zyrouge/zemver": "^1.0.0"
     }
 }

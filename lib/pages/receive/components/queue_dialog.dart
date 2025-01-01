@@ -124,7 +124,9 @@ class RuiReceiverDownloadQueue {
   }
 
   Future<void> _start() async {
-    if (_running) return;
+    if (_running) {
+      return;
+    }
     _running = true;
     while (true) {
       final RuiReceiverDownloadItem? x = entities.firstWhereOrNull(

@@ -130,7 +130,9 @@ class __RuiLoadingIndicatorState extends State<_RuiLoadingIndicator> {
   void initState() {
     super.initState();
     Timer.periodic(const Duration(milliseconds: 500), (final _) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         highlight = !highlight;
       });

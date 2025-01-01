@@ -13,7 +13,9 @@ sealed class RuiAsyncResult<T, E extends Object> {
 
   S? asStateOrNull<S extends RuiAsyncResult<T, E>>() {
     final RuiAsyncResult<T, E> value = this;
-    if (value is! S) return null;
+    if (value is! S) {
+      return null;
+    }
     return value;
   }
 

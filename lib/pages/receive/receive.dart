@@ -58,7 +58,9 @@ class _RuiReceivePageState extends State<RuiReceivePage> {
     return PopScope(
       canPop: canPop,
       onPopInvokedWithResult: (final bool didPop, final _) {
-        if (didPop) return;
+        if (didPop) {
+          return;
+        }
         if (canPop) {
           Navigator.of(context).pop();
           return;

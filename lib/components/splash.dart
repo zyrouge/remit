@@ -26,9 +26,13 @@ class _RuiSplashState extends State<RuiSplash> {
   void initState() {
     super.initState();
     RuiIgnition.initialize(() async {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       await Future<void>.delayed(const Duration(milliseconds: 500));
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         ready = true;
       });
@@ -107,7 +111,9 @@ class __RuiSplashLoadingIndicatorState
   void initState() {
     super.initState();
     Timer.periodic(const Duration(milliseconds: 500), (final _) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         highlight = !highlight;
       });

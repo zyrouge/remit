@@ -50,7 +50,9 @@ class _RuiAppState extends State<RuiApp> {
     super.initState();
     updateSettings(RuiSettings.settings);
     RuiSettings.onSettingsChange = (final RuiSettingsData nSettings) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         updateSettings(nSettings);
       });
@@ -135,9 +137,13 @@ class _RuiAppState extends State<RuiApp> {
 
   Future<void> updateTranslation(final RuiSettingsData nSettings) async {
     final String nLocale = nSettings.locale ?? kDefaultLocaleCode;
-    if (nLocale == translation.localeCode) return;
+    if (nLocale == translation.localeCode) {
+      return;
+    }
     final RuiTranslation nTranslation = await RuiTranslations.resolve(nLocale);
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     setState(() {
       translation = nTranslation;
     });

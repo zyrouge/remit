@@ -54,7 +54,9 @@ class _RuiReceivePageContentState extends State<RuiReceivePageContent> {
       entities = RuiAsyncResult.processing();
       final RemitFilesystemStaticDataPairs pairs =
           await receiver.connection.filesystemList(paths.join('/'));
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         entities = RuiAsyncResult.success(pairs);
       });
@@ -77,7 +79,9 @@ class _RuiReceivePageContentState extends State<RuiReceivePageContent> {
   Future<void> downloadAll() async {
     final RemitFilesystemStaticDataPairs? pairs =
         entities.asSuccessOrNull?.value;
-    if (pairs == null) return;
+    if (pairs == null) {
+      return;
+    }
     await widget.queue.addToQueue(
       parts: paths,
       folders: pairs.folders.toList(),

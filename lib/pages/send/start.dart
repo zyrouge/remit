@@ -79,13 +79,17 @@ class _RuiSendStartPageState extends State<RuiSendStartPage> {
     try {
       final List<InternetAddress> value =
           await RemitServer.getAvailableNetworks();
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         host = value.firstOrNull?.address;
         availableAddresses = RuiAsyncResult.success(value);
       });
     } catch (error) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         availableAddresses = RuiAsyncResult.failed(error);
       });

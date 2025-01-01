@@ -219,7 +219,9 @@ class _RuiTextFieldState extends State<RuiTextField> {
 
   void updateTextChanged(final String value) {
     widget.onChanged(value);
-    if (widget.validate == null) return;
+    if (widget.validate == null) {
+      return;
+    }
     setState(() {
       errorLabel = widget.validate!(value);
     });

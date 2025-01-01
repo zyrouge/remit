@@ -78,13 +78,17 @@ class _RuiReceiveStartPageState extends State<RuiReceiveStartPage> {
     try {
       final List<InternetAddress> value =
           await RemitServer.getAvailableNetworks();
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         host = value.firstOrNull?.address;
         availableAddresses = RuiAsyncResult.success(value);
       });
     } catch (error) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         availableAddresses = RuiAsyncResult.failed(error);
       });
@@ -109,6 +113,12 @@ class _RuiReceiveStartPageState extends State<RuiReceiveStartPage> {
         ),
         inviteCode: inviteCodeTextController.text,
         logger: log,
+        onFilesystemUpdated: (final _) {
+          // TODO: handle update event
+          if (!mounted) {
+            return;
+          }
+        },
       );
       if (!mounted) {
         receiver.destroy();
@@ -122,7 +132,9 @@ class _RuiReceiveStartPageState extends State<RuiReceiveStartPage> {
         isConnecting = false;
       });
     } catch (error) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       log.error('RemitReceiveStartPage', error.toString());
       setState(() {
         isConnecting = false;

@@ -4,8 +4,23 @@ import 'package:remit/exports.dart';
 
 class Log extends RemitLogger {
   @override
-  void info(final String tag, final String text) {
-    print('$tag: $text');
+  void debug(
+    final String tag,
+    final String text, [
+    final Object? err,
+    final Object? stackTrace,
+  ]) {
+    print('DEBUG $tag: $text');
+  }
+
+  @override
+  void info(
+    final String tag,
+    final String text, [
+    final Object? err,
+    final Object? stackTrace,
+  ]) {
+    print('INFO $tag: $text');
   }
 
   @override
@@ -15,7 +30,7 @@ class Log extends RemitLogger {
     final Object? err,
     final Object? stackTrace,
   ]) {
-    print('$tag: $text');
+    print('WARN $tag: $text');
     if (err != null) {
       print(err);
     }
@@ -31,7 +46,7 @@ class Log extends RemitLogger {
     final Object? err,
     final Object? stackTrace,
   ]) {
-    print('$tag: $text');
+    print('ERROR! $tag: $text');
     if (err != null) {
       print(err);
     }

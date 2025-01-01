@@ -73,7 +73,9 @@ class __RuiStateSettingsTextField extends State<RuiSettingsTextField> {
   }
 
   void onFinished() {
-    if (!isValid) return;
+    if (!isValid) {
+      return;
+    }
     widget.onChanged(value);
     controller.text = value;
     setState(() {

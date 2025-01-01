@@ -51,7 +51,9 @@ class _RuiSendPageContentState extends State<RuiSendPageContent> {
       entities = RuiAsyncResult.processing();
       final RemitFilesystemStaticDataPairs pairs =
           await sender.filesystem.listAsStaticDataPairs();
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         entities = RuiAsyncResult.success(pairs);
       });
@@ -67,27 +69,46 @@ class _RuiSendPageContentState extends State<RuiSendPageContent> {
 
   Future<void> openFilePicker() async {
     final List<RuiPickedFile> files = await RuiFilePicker.pick();
-    for (final RuiPickedFile x in files) {
-      sender.updateFilesystem((final RemitVirtualFolder root) {
+    await sender.updateFilesystem((final RemitVirtualFolder root) async {
+      final List<RemitFileStaticData> added = <RemitFileStaticData>[];
+      for (final RuiPickedFile x in files) {
         root.addEntity(x);
-      });
-    }
+        added.add(await x.toStaticData());
+      }
+      return RemitEventFilesystemUpdatedPairs(
+        added: <RemitEventFilesystemUpdatedAddedEntity>[
+          RemitEventFilesystemUpdatedAddedEntity(
+            path: root.basename,
+            pairs: RemitFilesystemStaticDataPairs(
+              files: added,
+              folders: <RemitFolderStaticData>[],
+            ),
+          ),
+        ],
+        modified: <RemitEventFilesystemUpdatedAddedEntity>[],
+        removed: <String>[],
+      );
+    });
     await updatePath(paths);
   }
 
   Future<void> removeSelectedFiles() async {
-    for (final RemitFileStaticData x in selectedFiles) {
-      sender.updateFilesystem((final RemitVirtualFolder root) {
-        // TODO: use remove method
-        root.entities.remove(x.basename);
-      });
-    }
-    for (final RemitFolderStaticData x in selectedFolders) {
-      sender.updateFilesystem((final RemitVirtualFolder root) {
-        // TODO: use remove method
-        root.entities.remove(x.basename);
-      });
-    }
+    await sender.updateFilesystem((final RemitVirtualFolder root) async {
+      final List<String> removed = <String>[];
+      for (final RemitFileStaticData x in selectedFiles) {
+        root.removeEntity(x.basename);
+        removed.add(x.basename);
+      }
+      for (final RemitFolderStaticData x in selectedFolders) {
+        root.removeEntity(x.basename);
+        removed.add(x.basename);
+      }
+      return RemitEventFilesystemUpdatedPairs(
+        added: <RemitEventFilesystemUpdatedAddedEntity>[],
+        modified: <RemitEventFilesystemUpdatedAddedEntity>[],
+        removed: removed,
+      );
+    });
     await updatePath(paths);
   }
 

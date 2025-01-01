@@ -23,7 +23,9 @@ function asyncSpawn(...args) {
     const child = spawn(...args);
     return new Promise((resolve, reject) => {
         child.once("close", (code) => {
-            if (code === 0) return resolve(code);
+            if (code === 0) {
+                return resolve(code);
+            }
             return reject(`Spawned process exited with ${code} exit code`);
         });
     });
