@@ -3,15 +3,33 @@ import 'package:flutter/services.dart';
 
 import 'remitx_native_platform_interface.dart';
 
-/// An implementation of [RemitxNativePlatform] that uses method channels.
 class MethodChannelRemitxNative extends RemitxNativePlatform {
-  /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodChannel = const MethodChannel('remitx_native');
+  final MethodChannel methodChannel = const MethodChannel('remitx_native');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
+  Future<String?> openFilePicker() =>
+      methodChannel.invokeMethod('openFilePicker');
+
+  @override
+  Future<String?> openFolderPicker() =>
+      methodChannel.invokeMethod('openFolderPicker');
+
+  @override
+  Future<Map<dynamic, dynamic>?> statFileUri(final String uri) {
+    final Map<dynamic, dynamic> arguments = <dynamic, dynamic>{'uri': uri};
+    return methodChannel.invokeMethod('statFileUri', arguments);
+  }
+
+  @override
+  Future<Map<dynamic, dynamic>?> statFolderUri(final String uri) {
+    final Map<dynamic, dynamic> arguments = <dynamic, dynamic>{'uri': uri};
+    return methodChannel.invokeMethod('statFolderUri', arguments);
+  }
+
+  @override
+  Future<List<Map<dynamic, dynamic>>?> listFolderUri(final String uri) {
+    final Map<dynamic, dynamic> arguments = <dynamic, dynamic>{'uri': uri};
+    return methodChannel.invokeListMethod('listFolderUri', arguments);
   }
 }

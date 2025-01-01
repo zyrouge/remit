@@ -625,6 +625,13 @@ packages:
       url: "https://github.com/zyrouge/dart_remit.git"
     source: git
     version: "0.0.0"
+  remitx_native:
+    dependency: "direct main"
+    description:
+      path: "packages/remitx_native"
+      relative: true
+    source: path
+    version: "0.0.1"
   shelf:
     dependency: transitive
     description:

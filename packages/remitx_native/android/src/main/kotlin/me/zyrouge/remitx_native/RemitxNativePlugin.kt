@@ -30,6 +30,7 @@ class RemitxNativePlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
             "openFolderPicker" -> filesystemPicker.startOpenDocumentTreeActivity(activity!!, result)
             "statFileUri" -> RemitxFilesystem.statDocumentUri(activity!!, call, result)
             "statFolderUri" -> RemitxFilesystem.statDocumentTreeUri(activity!!, call, result)
+            "listFolderUri" -> RemitxFilesystem.listDocumentTreeUri(activity!!, call, result)
             else -> result.notImplemented()
         }
     }

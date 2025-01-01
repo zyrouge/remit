@@ -1,4 +1,4 @@
-package io.github.zyrouge.remit
+package me.zyrouge.remit
 
 import io.flutter.embedding.android.FlutterActivity
 

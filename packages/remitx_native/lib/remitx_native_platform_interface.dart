@@ -3,27 +3,36 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'remitx_native_method_channel.dart';
 
 abstract class RemitxNativePlatform extends PlatformInterface {
-  /// Constructs a RemitxNativePlatform.
   RemitxNativePlatform() : super(token: _token);
 
-  static final Object _token = Object();
+  Future<String?> openFilePicker() {
+    throw UnimplementedError('openFilePicker() is not implemented');
+  }
+
+  Future<String?> openFolderPicker() {
+    throw UnimplementedError('openFolderPicker() is not implemented');
+  }
+
+  Future<Map<dynamic, dynamic>?> statFileUri(final String uri) {
+    throw UnimplementedError('statFileUri() is not implemented');
+  }
+
+  Future<Map<dynamic, dynamic>?> statFolderUri(final String uri) {
+    throw UnimplementedError('statFolderUri() is not implemented');
+  }
+
+  Future<List<Map<dynamic, dynamic>>?> listFolderUri(final String uri) {
+    throw UnimplementedError('listFolderUri() is not implemented');
+  }
+
+  static const Object _token = Object();
 
   static RemitxNativePlatform _instance = MethodChannelRemitxNative();
 
-  /// The default instance of [RemitxNativePlatform] to use.
-  ///
-  /// Defaults to [MethodChannelRemitxNative].
   static RemitxNativePlatform get instance => _instance;
 
-  /// Platform-specific implementations should set this with their own
-  /// platform-specific class that extends [RemitxNativePlatform] when
-  /// they register themselves.
-  static set instance(RemitxNativePlatform instance) {
+  static set instance(final RemitxNativePlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
-  }
-
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
   }
 }

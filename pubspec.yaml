@@ -23,8 +23,8 @@ dependencies:
     remit:
         git:
             url: https://github.com/zyrouge/dart_remit.git
-    # remitx_file_picker:
-    #     path: packages/remitx_file_picker
+    remitx_native:
+        path: packages/remitx_native
 
 dev_dependencies:
     build_runner: ^2.4.8
