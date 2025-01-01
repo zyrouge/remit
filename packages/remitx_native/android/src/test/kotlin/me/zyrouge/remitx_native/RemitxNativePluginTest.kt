@@ -1,4 +1,4 @@
-package io.github.zyrouge.remitx_native
+package me.zyrouge.remitx_native
 
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel

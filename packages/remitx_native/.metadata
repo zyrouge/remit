@@ -4,7 +4,7 @@
 # This file should be version controlled and should not be manually edited.
 
 version:
-  revision: "d7e373c6c24efcc9781ff1365ce6336a20d15804"
+  revision: "3e493a3e4d0a5c99fa7da51faae354e95a9a1abe"
   channel: "beta"
 
 project_type: plugin
@@ -13,11 +13,11 @@ project_type: plugin
 migration:
   platforms:
     - platform: root
-      create_revision: d7e373c6c24efcc9781ff1365ce6336a20d15804
-      base_revision: d7e373c6c24efcc9781ff1365ce6336a20d15804
+      create_revision: 3e493a3e4d0a5c99fa7da51faae354e95a9a1abe
+      base_revision: 3e493a3e4d0a5c99fa7da51faae354e95a9a1abe
     - platform: android
-      create_revision: d7e373c6c24efcc9781ff1365ce6336a20d15804
-      base_revision: d7e373c6c24efcc9781ff1365ce6336a20d15804
+      create_revision: 3e493a3e4d0a5c99fa7da51faae354e95a9a1abe
+      base_revision: 3e493a3e4d0a5c99fa7da51faae354e95a9a1abe
 
   # User provided section
 
